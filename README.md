@@ -33,8 +33,9 @@ The launch screen, used to pick how many seats are in play and which fighter
 sits at each one.
 
 <p>
-  <img src="screenshots/ios-setup.png" width="240"/>
-  <img src="screenshots/android-setup.png" width="240"/>
+<img width="800" height="1340" alt="Screenshot_20260502_155922_Unmatched" src="https://github.com/user-attachments/assets/ac829ae3-a96a-4745-84d3-52f104d79868" />
+<img width="800" height="1340" alt="Screenshot_20260502_155846_Unmatched" src="https://github.com/user-attachments/assets/ccfab8d2-24fd-45e0-8ee6-151b7f07495f" />
+
 </p>
 
 - **Title bar** with the app name and a thin two-tone divider with a small
