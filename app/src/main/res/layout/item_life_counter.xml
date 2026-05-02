@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/player_life_width"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:showDividers="none">
+
+    <FrameLayout
+        android:id="@+id/life_column_0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.unmatchedcounter.view.counter.LifeCounterView
+            android:id="@+id/life_segment_0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.unmatchedcounter.view.TouchPassthroughTextView
+            android:id="@+id/life_label_0"
+            style="@style/LifePoolLabelGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/life_pool_label_margin_top"
+            android:clickable="false"
+            android:focusable="false"
+            android:longClickable="false" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/life_separator_0"
+        android:layout_width="@dimen/counter_divider_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/player_divider"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/life_column_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <com.unmatchedcounter.view.counter.LifeCounterView
+            android:id="@+id/life_segment_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.unmatchedcounter.view.TouchPassthroughTextView
+            android:id="@+id/life_label_1"
+            style="@style/LifePoolLabelGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/life_pool_label_margin_top"
+            android:clickable="false"
+            android:focusable="false"
+            android:longClickable="false" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/life_separator_1"
+        android:layout_width="@dimen/counter_divider_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/player_divider"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/life_column_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <com.unmatchedcounter.view.counter.LifeCounterView
+            android:id="@+id/life_segment_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.unmatchedcounter.view.TouchPassthroughTextView
+            android:id="@+id/life_label_2"
+            style="@style/LifePoolLabelGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/life_pool_label_margin_top"
+            android:clickable="false"
+            android:focusable="false"
+            android:longClickable="false" />
+
+    </FrameLayout>
+
+</LinearLayout>

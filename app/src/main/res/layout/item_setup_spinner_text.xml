@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
+    style="@style/NavMenuText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:ellipsize="end"
+    android:gravity="center_vertical|center_horizontal"
+    android:maxLines="2"
+    android:paddingHorizontal="4dp"
+    android:paddingVertical="10dp"
+    android:textSize="14sp"
+    tools:text="Character" />

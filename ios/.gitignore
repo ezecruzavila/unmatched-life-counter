@@ -1,0 +1,19 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+.swiftpm/
+
+# CocoaPods (not used — present here as a guard rail)
+Pods/
+
+# macOS
+.DS_Store

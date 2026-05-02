@@ -1,0 +1,1 @@
+At this time, UnmatchedCounter does not collect any data on its users

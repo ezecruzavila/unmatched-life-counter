@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="dark_mode_ripple_color">#40ffffff</color>
+
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="dark_grey">#9FA8AC</color>
+    <color name="off_black">#242424</color>
+
+    <color name="accent_blue">#00B0FF</color>
+    <color name="cool_purple">#B388FF</color>
+    <color name="light_red">#EF5350</color>
+    <color name="turkwise">#1DE9B6</color>
+    <color name="light_green">#CCFF90</color>
+    <color name="light_orange">#FFC400</color>
+    <color name="light_pink">#FF80AB</color>
+    <color name="indigo">#536DFE</color>
+    <color name="green">#00C853</color>
+
+    <color name="setup_player_card_bg">#323234</color>
+    <color name="setup_ui_border_gray">#707075</color>
+    <color name="setup_ui_border_disabled">#3A3A3D</color>
+    <color name="setup_spinner_field_fill">#161618</color>
+    <color name="setup_player_count_button_unselected_fill">#1F1F22</color>
+    <color name="setup_player_count_button_selected_stroke">#2DB7B7</color>
+    <color name="setup_divider_left">#2DB7B7</color>
+    <color name="setup_divider_right">#F0843D</color>
+    <color name="game_hub_hex_fill">#121212</color>
+    <color name="game_hub_hex_border">#FFFFFF</color>
+
+</resources>

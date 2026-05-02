@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Crossed swords mark. Two identical sword silhouettes are rotated +/-45° around
+    the canvas center so the icon stays symmetric at any tint colour.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <group
+        android:pivotX="24"
+        android:pivotY="24"
+        android:rotation="45">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M24,2 L21,6 L21,30 L14,30 L14,33 L21,33 L21,40 L19,40 L19,46 L29,46 L29,40 L27,40 L27,33 L34,33 L34,30 L27,30 L27,6 Z" />
+    </group>
+
+    <group
+        android:pivotX="24"
+        android:pivotY="24"
+        android:rotation="-45">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M24,2 L21,6 L21,30 L14,30 L14,33 L21,33 L21,40 L19,40 L19,46 L29,46 L29,40 L27,40 L27,33 L34,33 L34,30 L27,30 L27,6 Z" />
+    </group>
+</vector>

@@ -1,0 +1,11 @@
+<resources>
+    <dimen name="menu_button_height">120dp</dimen>
+    <dimen name="dialog_width">500dp</dimen>
+
+    <dimen name="game_hub_button_size">73dp</dimen>
+
+    <dimen name="player_life_width">150dp</dimen>
+
+    <dimen name="splash_app_name_text_size">42sp</dimen>
+    <dimen name="splash_logo_size">280dp</dimen>
+</resources>

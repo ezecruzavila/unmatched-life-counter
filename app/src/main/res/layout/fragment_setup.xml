@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="?attr/scBackgroundColor"
+    tools:context=".ui.setup.SetupFragment">
+
+    <TextView
+        style="@style/SetupScreenTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/setup_screen_title_top_padding"
+        android:paddingBottom="@dimen/setup_screen_title_bottom_margin"
+        android:text="@string/setup_screen_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/setup_divider_bottom_margin"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/setup_divider_horizontal_padding">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/setup_divider_line_thickness"
+            android:layout_weight="1"
+            android:background="@color/setup_divider_left" />
+
+        <ImageView
+            android:layout_width="@dimen/setup_divider_diamond_size"
+            android:layout_height="@dimen/setup_divider_diamond_size"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_setup_divider_diamond" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/setup_divider_line_thickness"
+            android:layout_weight="1"
+            android:background="@color/setup_divider_right" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/setup_player_count_section_bottom_margin"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/setup_padding_horizontal">
+
+        <TextView
+            style="@style/SetupPlayerCountLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/setup_player_count_label_bottom_margin"
+            android:text="@string/setup_player_count_title" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setup_player_count_button_height"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/setup_player_count_option_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/setup_player_count_button_gap"
+                android:layout_weight="1"
+                android:background="@drawable/setup_player_count_button_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <ImageView
+                    android:layout_width="@dimen/setup_player_count_button_icon_size"
+                    android:layout_height="@dimen/setup_player_count_button_icon_size"
+                    android:layout_marginEnd="@dimen/setup_player_count_button_icon_text_gap"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_person" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/setup_player_count_2"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/setup_player_count_button_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/setup_player_count_option_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/setup_player_count_button_unselected"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <ImageView
+                    android:layout_width="@dimen/setup_player_count_button_icon_size"
+                    android:layout_height="@dimen/setup_player_count_button_icon_size"
+                    android:layout_marginEnd="@dimen/setup_player_count_button_icon_text_gap"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_people" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/setup_player_count_4"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/setup_player_count_button_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipChildren="false"
+        android:minHeight="280dp">
+
+        <!-- Debajo del grid: logo circular encaja en el recorte de las tarjetas (clip en SetupFragment). -->
+        <ImageView
+            android:id="@+id/setup_center_logo"
+            android:layout_width="@dimen/setup_center_plate_size"
+            android:layout_height="@dimen/setup_center_plate_size"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:contentDescription="@string/setup_center_logo_cd"
+            android:focusable="false"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_setup_center_unmatched" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/setup_padding_horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/setup_card_player_0"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/setup_grid_card_margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setup_card_padding"
+                    android:paddingTop="@dimen/setup_card_padding"
+                    android:paddingBottom="@dimen/setup_card_padding_bite_side">
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/setup_avatar_image_0"
+                        android:layout_width="@dimen/setup_avatar_size"
+                        android:layout_height="@dimen/setup_avatar_size"
+                        android:scaleType="fitCenter"
+                        android:importantForAccessibility="no"
+                        tools:src="@drawable/avatar_geralt" />
+
+                    <TextView
+                        style="@style/SetupPlayerLabel"
+                        android:layout_marginTop="@dimen/setup_player_label_spacing"
+                        android:text="@string/setup_player_1" />
+
+                    <LinearLayout
+                        android:id="@+id/setup_spinner_row_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setup_spinner_field_height"
+                        android:layout_marginTop="@dimen/setup_player_row_label_spinner_gap"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/setup_spinner_field_horizontal_padding"
+                        android:paddingEnd="@dimen/setup_spinner_field_horizontal_padding">
+
+                        <Spinner
+                            android:id="@+id/player_0_character_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:popupBackground="@drawable/setup_player_card_bg"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/setup_card_player_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/setup_grid_card_margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setup_card_padding"
+                    android:paddingTop="@dimen/setup_card_padding"
+                    android:paddingBottom="@dimen/setup_card_padding_bite_side">
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/setup_avatar_image_1"
+                        android:layout_width="@dimen/setup_avatar_size"
+                        android:layout_height="@dimen/setup_avatar_size"
+                        android:scaleType="fitCenter"
+                        android:importantForAccessibility="no"
+                        tools:src="@drawable/avatar_bigfoot" />
+
+                    <TextView
+                        style="@style/SetupPlayerLabel"
+                        android:layout_marginTop="@dimen/setup_player_label_spacing"
+                        android:text="@string/setup_player_2" />
+
+                    <LinearLayout
+                        android:id="@+id/setup_spinner_row_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setup_spinner_field_height"
+                        android:layout_marginTop="@dimen/setup_player_row_label_spinner_gap"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/setup_spinner_field_horizontal_padding"
+                        android:paddingEnd="@dimen/setup_spinner_field_horizontal_padding">
+
+                        <Spinner
+                            android:id="@+id/player_1_character_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:popupBackground="@drawable/setup_player_card_bg"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/setup_card_player_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/setup_grid_card_margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setup_card_padding"
+                    android:paddingTop="@dimen/setup_card_padding_bite_side"
+                    android:paddingBottom="@dimen/setup_card_padding">
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/setup_avatar_image_2"
+                        android:layout_width="@dimen/setup_avatar_size"
+                        android:layout_height="@dimen/setup_avatar_size"
+                        android:scaleType="fitCenter"
+                        android:importantForAccessibility="no"
+                        tools:src="@drawable/avatar_brucelee" />
+
+                    <TextView
+                        style="@style/SetupPlayerLabel"
+                        android:layout_marginTop="@dimen/setup_player_label_spacing"
+                        android:text="@string/setup_player_3" />
+
+                    <LinearLayout
+                        android:id="@+id/setup_spinner_row_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setup_spinner_field_height"
+                        android:layout_marginTop="@dimen/setup_player_row_label_spinner_gap"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/setup_spinner_field_horizontal_padding"
+                        android:paddingEnd="@dimen/setup_spinner_field_horizontal_padding">
+
+                        <Spinner
+                            android:id="@+id/player_2_character_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:popupBackground="@drawable/setup_player_card_bg"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/setup_card_player_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/setup_grid_card_margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setup_card_padding"
+                    android:paddingTop="@dimen/setup_card_padding_bite_side"
+                    android:paddingBottom="@dimen/setup_card_padding">
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/setup_avatar_image_3"
+                        android:layout_width="@dimen/setup_avatar_size"
+                        android:layout_height="@dimen/setup_avatar_size"
+                        android:scaleType="fitCenter"
+                        android:importantForAccessibility="no"
+                        tools:src="@drawable/avatar_syndra" />
+
+                    <TextView
+                        style="@style/SetupPlayerLabel"
+                        android:layout_marginTop="@dimen/setup_player_label_spacing"
+                        android:text="@string/setup_player_4" />
+
+                    <LinearLayout
+                        android:id="@+id/setup_spinner_row_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setup_spinner_field_height"
+                        android:layout_marginTop="@dimen/setup_player_row_label_spinner_gap"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/setup_spinner_field_horizontal_padding"
+                        android:paddingEnd="@dimen/setup_spinner_field_horizontal_padding">
+
+                        <Spinner
+                            android:id="@+id/player_3_character_spinner"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:popupBackground="@drawable/setup_player_card_bg"
+                            android:spinnerMode="dropdown" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/start_button"
+        style="@style/SetupStartGameButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/setup_start_button_horizontal_margin"
+        android:layout_marginVertical="@dimen/setup_start_button_vertical_margin"
+        android:baselineAligned="false"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/setup_start_button_icon_size"
+            android:layout_height="@dimen/setup_start_button_icon_size"
+            android:layout_marginEnd="@dimen/setup_start_button_icon_text_gap"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_start_swords" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:letterSpacing="0.06"
+            android:text="@string/start_game"
+            android:textAllCaps="true"
+            android:textColor="?attr/scMenuButtonTextColor"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

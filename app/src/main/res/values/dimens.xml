@@ -1,0 +1,87 @@
+<resources>
+    <dimen name="default_padding">16dp</dimen>
+
+    <dimen name="menu_button_height">80dp</dimen>
+    <dimen name="dialog_width">300dp</dimen>
+
+    <dimen name="setup_padding_horizontal">20dp</dimen>
+    <dimen name="setup_player_row_label_spinner_gap">10dp</dimen>
+    <dimen name="setup_spinner_field_height">54dp</dimen>
+    <dimen name="setup_spinner_corner_radius">14dp</dimen>
+    <dimen name="setup_spinner_field_horizontal_padding">14dp</dimen>
+    <!-- Plate diameter; card cutout radius is half (see SetupPlayerCardBackgroundDrawable). -->
+    <dimen name="setup_center_plate_size">123dp</dimen>
+    <dimen name="setup_screen_title_top_padding">22dp</dimen>
+    <dimen name="setup_screen_title_bottom_margin">14dp</dimen>
+    <dimen name="setup_screen_title_text_size">26sp</dimen>
+    <dimen name="setup_divider_line_thickness">2dp</dimen>
+    <dimen name="setup_divider_diamond_size">12dp</dimen>
+    <dimen name="setup_divider_horizontal_padding">28dp</dimen>
+    <dimen name="setup_divider_bottom_margin">16dp</dimen>
+    <dimen name="setup_grid_card_margin">8dp</dimen>
+    <dimen name="setup_player_count_section_bottom_margin">14dp</dimen>
+    <dimen name="setup_player_count_label_text_size">14sp</dimen>
+    <dimen name="setup_player_count_label_bottom_margin">8dp</dimen>
+    <dimen name="setup_player_count_button_height">43dp</dimen>
+    <dimen name="setup_player_count_button_corner_radius">10dp</dimen>
+    <dimen name="setup_player_count_button_stroke_width">2dp</dimen>
+    <dimen name="setup_player_count_button_gap">12dp</dimen>
+    <dimen name="setup_player_count_button_icon_size">15dp</dimen>
+    <dimen name="setup_player_count_button_icon_text_gap">7dp</dimen>
+    <dimen name="setup_player_count_button_text_size">11sp</dimen>
+    <dimen name="setup_start_button_icon_size">24dp</dimen>
+    <dimen name="setup_start_button_icon_text_gap">10dp</dimen>
+
+    <item name="setup_disabled_card_alpha" format="float" type="dimen">0.45</item>
+    <dimen name="setup_card_padding">18dp</dimen>
+    <!-- Larger padding applied only on the side facing the central hub bite, so the
+         centered content (avatar/label/spinner) doesn't crowd that edge. Top cards use
+         it as paddingBottom; bottom cards use it as paddingTop. -->
+    <dimen name="setup_card_padding_bite_side">56dp</dimen>
+    <dimen name="setup_ui_stroke_width">2dp</dimen>
+    <dimen name="setup_card_corner_radius">20dp</dimen>
+    <dimen name="setup_avatar_size">69dp</dimen>
+    <dimen name="setup_player_label_spacing">12dp</dimen>
+    <dimen name="setup_start_button_horizontal_margin">16dp</dimen>
+    <dimen name="setup_start_button_vertical_margin">12dp</dimen>
+    <dimen name="setup_start_button_min_height">40dp</dimen>
+
+    <!-- Circular hub buttons (diameter). -->
+    <dimen name="game_hub_button_size">55dp</dimen>
+    <dimen name="game_hub_white_stroke_width">3dp</dimen>
+    <dimen name="game_hub_icon_padding">9dp</dimen>
+    <dimen name="game_hub_buttons_gap">10dp</dimen>
+
+    <dimen name="counter_label_min_text_size">11sp</dimen>
+    <dimen name="counter_max_text_size">300sp</dimen>
+    <dimen name="counter_scroll_threshold">16dp</dimen>
+
+    <dimen name="splash_app_name_text_size">34sp</dimen>
+    <!-- Brand asset on splash; caps height, width follows aspect ratio -->
+    <dimen name="splash_logo_size">220dp</dimen>
+
+    <dimen name="player_life_width">130dp</dimen>
+    <dimen name="counter_divider_width">3dp</dimen>
+    <dimen name="player_divider_width">1dp</dimen>
+
+    <!-- Tabletop: inset between player tiles + rounded panel clips -->
+    <dimen name="player_panel_corner_radius">16dp</dimen>
+    <dimen name="player_panel_margin">6dp</dimen>
+
+    <!-- 2-player layout: horizontal panels are very landscape-shaped, so we add
+         extra black framing around them and a larger gap between both players
+         to make the character art breathe. -->
+    <dimen name="tabletop_2p_panel_horizontal_margin">24dp</dimen>
+    <dimen name="tabletop_2p_panel_outer_margin">30dp</dimen>
+    <dimen name="tabletop_2p_panel_inner_margin">44dp</dimen>
+
+    <dimen name="life_pool_label_text_size">18sp</dimen>
+    <!-- Space from panel top to label chip (outside background — avoids tall scrim strip) -->
+    <dimen name="life_pool_label_margin_top">10dp</dimen>
+    <!-- Inner padding only around glyphs (background draws inside this inset) -->
+    <dimen name="life_pool_label_chip_padding">6dp</dimen>
+    <dimen name="life_pool_label_bg_corner_radius">10dp</dimen>
+
+    <!-- Contorno negro fino (OutlinedAmountTextView: Paint.Style.STROKE) -->
+    <dimen name="counter_amount_stroke_width">2dp</dimen>
+</resources>

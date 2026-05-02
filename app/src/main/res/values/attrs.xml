@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="scIsLightTheme" format="boolean" />
+    <attr name="scStatusBarColor" format="reference|color" />
+    <attr name="scToolbarColor" format="reference|color" />
+    <attr name="scAccentColor" format="reference|color" />
+    <attr name="scRippleColor" format="reference|color" />
+    <attr name="scMenuEnabledButtonColor" format="reference|color" />
+    <attr name="scMenuDisabledButtonColor" format="reference|color" />
+    <attr name="scMenuButtonTextColor" format="reference|color" />
+    <attr name="scTextColorCaption" format="reference|color" />
+    <attr name="scTextColorPrimary" format="reference|color" />
+    <attr name="scPlayerDividerColor" format="reference|color" />
+    <attr name="scBackgroundColor" format="reference|color"/>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/setup_player_card_bg" />
+    <corners android:radius="@dimen/setup_card_corner_radius" />
+    <stroke
+        android:width="@dimen/setup_ui_stroke_width"
+        android:color="@color/setup_ui_border_gray" />
+</shape>

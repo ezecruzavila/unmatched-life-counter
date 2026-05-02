@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CounterText">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:textColor">?attr/scTextColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="autoSizeMinTextSize">11sp</item>
+        <item name="autoSizeMaxTextSize">@dimen/counter_max_text_size</item>
+        <item name="autoSizeStepGranularity">1px</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <!-- Life totals: blanco + trazo en OutlinedAmountTextView (no shadowRadius: crash con autosize) -->
+    <style name="CounterTextGame" parent="CounterText">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Life pool names: tight chip around text; marginTop is on the view in XML (outside background). -->
+    <style name="LifePoolLabelGame">
+        <item name="android:background">@drawable/life_pool_label_scrim</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:lineSpacingExtra">0dp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:paddingStart">@dimen/life_pool_label_chip_padding</item>
+        <item name="android:paddingTop">@dimen/life_pool_label_chip_padding</item>
+        <item name="android:paddingEnd">@dimen/life_pool_label_chip_padding</item>
+        <item name="android:paddingBottom">@dimen/life_pool_label_chip_padding</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/life_pool_label_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:textColor">?attr/scTextColorPrimary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Header1">
+        <item name="android:drawableTint">?attr/scTextColorPrimary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/scTextColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="Header3" parent="Header1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="Label">
+        <item name="android:textColor">?attr/scTextColorCaption</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="NavMenuText">
+        <item name="android:textColor">?attr/scTextColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="drawableTint">?attr/scTextColorPrimary</item>
+        <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="SetupScreenTitle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/setup_screen_title_text_size</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="SetupPlayerLabel" parent="Header3">
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SetupPlayerCountLabel">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/setup_player_count_label_text_size</item>
+        <item name="android:textColor">?attr/scTextColorCaption</item>
+        <item name="android:letterSpacing">0.22</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="SetupStartGameButton" parent="MenuButton.Round">
+        <item name="android:minHeight">@dimen/setup_start_button_min_height</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">0.06</item>
+    </style>
+
+    <style name="SplashAppTitle">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/splash_app_name_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+        <item name="android:shadowColor">#FF00B0FF</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">18</item>
+    </style>
+
+</resources>
