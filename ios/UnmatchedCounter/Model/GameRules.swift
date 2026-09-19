@@ -23,7 +23,9 @@ enum GameRules {
         case 2:
             return [.topPanel, .bottomPanel]
         case 4:
-            return [.leftPanel1, .leftPanel2, .rightPanel1, .rightPanel2]
+            // Row-major order so the in-game tabletop matches the 2×2 setup
+            // grid (P1 top-left, P2 top-right, P3 bottom-left, P4 bottom-right).
+            return [.leftPanel1, .rightPanel1, .leftPanel2, .rightPanel2]
         default:
             preconditionFailure("Unsupported player count: \(count)")
         }

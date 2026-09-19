@@ -9,8 +9,13 @@ import androidx.core.content.ContextCompat
 import com.unmatchedcounter.R
 
 /**
- * Life totals: filled text with a thin stroke behind it.
- * Avoids [android:shadowLayer/shadowRadius], which can crash with autosize on some devices.
+ * Filled text with a thin stroke drawn behind it. Defaults to a black outline
+ * (life totals); the outline color is overridable via [R.styleable] attr
+ * `outlineStrokeColor` so the same view can give, e.g., a white outline over
+ * dark art.
+ *
+ * Avoids [android:shadowLayer/shadowRadius], which can crash with autosize on
+ * some devices.
  */
 class OutlinedAmountTextView @JvmOverloads constructor(
     context: Context,
@@ -21,8 +26,18 @@ class OutlinedAmountTextView @JvmOverloads constructor(
     private val strokeWidthPx: Float
         get() = resources.getDimension(R.dimen.counter_amount_stroke_width)
 
+    private var strokeColor: Int = ContextCompat.getColor(context, R.color.black)
+
     init {
         paint.isAntiAlias = true
+        attrs?.let {
+            val a = context.obtainStyledAttributes(it, R.styleable.OutlinedAmountTextView)
+            strokeColor = a.getColor(
+                R.styleable.OutlinedAmountTextView_outlineStrokeColor,
+                strokeColor,
+            )
+            a.recycle()
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -35,7 +50,7 @@ class OutlinedAmountTextView @JvmOverloads constructor(
         p.strokeMiter = 10f
         p.style = Paint.Style.STROKE
         p.strokeWidth = strokeWidthPx
-        setTextColor(ContextCompat.getColor(context, R.color.black))
+        setTextColor(strokeColor)
         super.onDraw(canvas)
 
         setTextColor(origColors)

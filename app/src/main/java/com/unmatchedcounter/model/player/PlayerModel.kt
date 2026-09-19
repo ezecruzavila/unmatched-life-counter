@@ -19,6 +19,13 @@ data class PlayerModel(
     val lifeSegmentMaximums: List<Int> = listOf(0),
     val lifeSegments: List<Int> = listOf(0),
     @ColorRes val colorResId: Int = 0,
+    /**
+     * Current value of the floating extra button, or null if this character has
+     * none. Its meaning depends on the character's
+     * [com.unmatchedcounter.model.player.ExtraButtonSpec]: the count for a
+     * [ExtraButtonSpec.Counter], or the state index for a [ExtraButtonSpec.Toggle].
+     */
+    val extraButtonValue: Int? = null,
 ) : Parcelable {
     init {
         require(lifeSegments.isNotEmpty() && lifeSegments.size <= LifeSegmentUtils.MAX_LIFE_SEGMENTS) {

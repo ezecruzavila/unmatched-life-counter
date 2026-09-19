@@ -13,3 +13,15 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Web (PWA) port
+/web/node_modules
+/web/dist
+/web/dist-ssr
+/web/*.local
+
+# Claude / editor local
+/.claude
+/.cursor
+/.vscode
+/.kotlin

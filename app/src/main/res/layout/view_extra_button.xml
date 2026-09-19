@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <!-- Counter art (e.g. Muldoon's warning-triangle trap). No background; the
+         transparent PNG sits directly over the player panel. -->
+    <ImageView
+        android:id="@+id/extra_button_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter" />
+
+    <!--
+        COUNTER value: solid black, centered. The triangle art is widest at the
+        bottom, so bias the number toward the lower-center where it sits inside
+        the shape rather than over the apex.
+    -->
+    <com.unmatchedcounter.view.OutlinedAmountTextView
+        android:id="@+id/extra_button_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/extra_button_counter_text_margin_bottom"
+        android:fontFamily="sans-serif-black"
+        android:includeFontPadding="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/extra_button_counter_text_size"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:outlineStrokeColor="@color/white"
+        tools:text="8"
+        tools:visibility="visible" />
+
+    <!--
+        TOGGLE label: colored pill with the current state's text. Mutually
+        exclusive with the counter art + amount above. Width is fixed by the host
+        (see PlayerViewHolder) to fit the longest state word, so the pill does not
+        resize as the text changes; text is centered within it.
+    -->
+    <TextView
+        android:id="@+id/extra_button_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/extra_button_text_padding_horizontal"
+        android:paddingVertical="@dimen/extra_button_text_padding_vertical"
+        android:fontFamily="sans-serif-black"
+        android:textSize="@dimen/extra_button_text_size"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="UNCERTAIN" />
+
+</merge>

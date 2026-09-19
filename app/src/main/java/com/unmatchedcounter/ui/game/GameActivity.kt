@@ -65,9 +65,26 @@ class GameActivity : BaseActivity(), OnPlayerUpdatedListener {
         applyTabletopPanelMargins(viewModel.playerCount)
         addHubButtons()
 
+        // Full refresh: initial bind and resets.
         viewModel.players.observe(this) {
             tabletopLayoutAdapter.updateAll(tabletopPositions, it)
         }
+        // Hot path: re-bind only the seat that changed (a life tick / extra button)
+        // instead of all four, avoiding redundant binds and background reloads.
+        viewModel.playerChanged.observe(this) { playerId ->
+            if (playerId in tabletopPositions.indices) {
+                tabletopLayoutAdapter.updateAtPosition(
+                    tabletopPositions[playerId],
+                    viewModel.playerAt(playerId),
+                )
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Persist once when leaving the foreground rather than on every tick.
+        viewModel.persistState()
     }
 
     private fun addHubButtons() {
@@ -252,5 +269,9 @@ class GameActivity : BaseActivity(), OnPlayerUpdatedListener {
     }
 
     override fun onLifeAmountSet(playerId: Int, amount: Int, segmentIndex: Int) {
+    }
+
+    override fun onExtraButtonClicked(playerId: Int) {
+        viewModel.onExtraButtonClicked(playerId)
     }
 }

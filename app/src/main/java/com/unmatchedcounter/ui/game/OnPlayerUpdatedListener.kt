@@ -7,4 +7,7 @@ interface OnPlayerUpdatedListener {
         segmentIndex: Int = 0,
     )
     fun onLifeAmountSet(playerId: Int, amount: Int, segmentIndex: Int = 0)
+
+    /** The floating extra button for [playerId] was tapped. */
+    fun onExtraButtonClicked(playerId: Int)
 }

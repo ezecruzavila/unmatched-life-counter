@@ -31,8 +31,15 @@ class CountersRecyclerAdapter(
     }
 
     fun setData(player: PlayerModel) {
+        val hadPlayer = this.player != null
         this.player = player
-        notifyDataSetChanged()
+        // This adapter always holds exactly one item, so update it in place
+        // instead of nuking the whole data set on every life tick.
+        if (hadPlayer) {
+            notifyItemChanged(0)
+        } else {
+            notifyItemInserted(0)
+        }
     }
 
     override fun getItemId(position: Int): Long {

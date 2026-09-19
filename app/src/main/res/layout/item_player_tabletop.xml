@@ -32,4 +32,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--
+        Floating extra button anchored to the bottom-end corner. Each tabletop
+        panel is rotated by RotateLayout so the player faces inward, which makes
+        this corner the one furthest from the table center for every seat.
+    -->
+    <com.unmatchedcounter.view.ExtraButtonView
+        android:id="@+id/extra_button"
+        android:layout_width="@dimen/extra_button_size"
+        android:layout_height="@dimen/extra_button_size"
+        android:layout_margin="@dimen/extra_button_margin"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -84,4 +84,18 @@
 
     <!-- Contorno negro fino (OutlinedAmountTextView: Paint.Style.STROKE) -->
     <dimen name="counter_amount_stroke_width">2dp</dimen>
+
+    <!-- Floating extra button (over the life counter, outer corner of the panel) -->
+    <!-- Square footprint of the counter (triangle art) button. -->
+    <dimen name="extra_button_size">80dp</dimen>
+    <dimen name="extra_button_margin">10dp</dimen>
+    <!-- COUNTER (Muldoon trap triangle) number -->
+    <dimen name="extra_button_counter_text_size">26sp</dimen>
+    <!-- Bias the number toward the wide lower-center of the triangle. -->
+    <dimen name="extra_button_counter_text_margin_bottom">14dp</dimen>
+    <!-- TOGGLE (Schrödinger) pill -->
+    <dimen name="extra_button_corner_radius">12dp</dimen>
+    <dimen name="extra_button_text_size">16sp</dimen>
+    <dimen name="extra_button_text_padding_horizontal">10dp</dimen>
+    <dimen name="extra_button_text_padding_vertical">5dp</dimen>
 </resources>

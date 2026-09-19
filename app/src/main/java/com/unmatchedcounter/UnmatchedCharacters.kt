@@ -3,6 +3,7 @@ package com.unmatchedcounter
 import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import com.unmatchedcounter.model.player.ExtraButtonSpec
 
 /**
  * Playable Unmatched character names for the four life-counter seats.
@@ -12,7 +13,8 @@ object UnmatchedCharacters {
 
     /**
      * Single source of truth for display name, life pools, labels, panel art,
-     * and setup UI accent (card / spinner / avatar borders).
+     * setup UI accent (card / spinner / avatar borders), and the optional
+     * floating extra button shown over the life counter in-game.
      */
     private enum class Fighter(
         val displayName: String,
@@ -21,6 +23,8 @@ object UnmatchedCharacters {
         @DrawableRes val avatarResId: Int,
         val startingLifeSegments: List<Int>,
         @ColorInt val setupAccentColorArgb: Int,
+        /** Optional per-character floating button; null = no extra button. */
+        val extraButton: ExtraButtonSpec? = null,
     ) {
         GERALT(
             displayName = "Geralt & Dendelion",
@@ -69,6 +73,12 @@ object UnmatchedCharacters {
             avatarResId = R.drawable.avatar_muldoon,
             startingLifeSegments = listOf(14),
             setupAccentColorArgb = Color.parseColor("#E39139"),
+            extraButton = ExtraButtonSpec.Counter(
+                // Triangle warning-sign "trap" art (transparent PNG). To swap in the
+                // final artwork, drop extra_muldoon_trap.png into res/drawable-nodpi/.
+                imageResId = R.drawable.extra_muldoon_trap,
+                start = 8,
+            ),
         ),
         CHUPACABRAS(
             displayName = "Chupacabras",
@@ -118,6 +128,14 @@ object UnmatchedCharacters {
             startingLifeSegments = listOf(17),
             setupAccentColorArgb = Color.parseColor("#770A08"),
         ),
+        LESHEN_WOLVES(
+            displayName = "Leshen & Wolves",
+            segmentLabels = listOf("LESHEN"),
+            backgroundResId = R.drawable.bg_leshen,
+            avatarResId = R.drawable.avatar_leshen,
+            startingLifeSegments = listOf(13),
+            setupAccentColorArgb = Color.parseColor("#436e37"),
+        ),
         LOKI(
             displayName = "Loki",
             segmentLabels = listOf("LOKI"),
@@ -125,6 +143,28 @@ object UnmatchedCharacters {
             avatarResId = R.drawable.avatar_loki,
             startingLifeSegments = listOf(16),
             setupAccentColorArgb = Color.parseColor("#354932"),
+        ),
+        SCHRODINGERS_CAT(
+            displayName = "Schrödinger's Cat",
+            segmentLabels = listOf("SCHRÖDINGER'S CAT"),
+            backgroundResId = R.drawable.bg_schrodinger,
+            avatarResId = R.drawable.avatar_schrodinger,
+            startingLifeSegments = listOf(15),
+            setupAccentColorArgb = Color.parseColor("#6c2919"),
+            extraButton = ExtraButtonSpec.Toggle(
+                states = listOf(
+                    ExtraButtonSpec.Toggle.State(
+                        text = "UNCERTAIN",
+                        textColorArgb = Color.parseColor("#FFFFFF"),
+                        backgroundColorArgb = Color.parseColor("#00A7C0"),
+                    ),
+                    ExtraButtonSpec.Toggle.State(
+                        text = "OBSERVED",
+                        textColorArgb = Color.parseColor("#FFFFFF"),
+                        backgroundColorArgb = Color.parseColor("#C5330D"),
+                    ),
+                ),
+            ),
         ),
         SHERLOCK_WATSON(
             displayName = "Sherlock & Dr.Watson",
@@ -173,6 +213,20 @@ object UnmatchedCharacters {
             avatarResId = R.drawable.avatar_alice,
             startingLifeSegments = listOf(13, 8),
             setupAccentColorArgb = Color.parseColor("#5876A1"),
+            extraButton = ExtraButtonSpec.Toggle(
+                states = listOf(
+                    ExtraButtonSpec.Toggle.State(
+                        text = "BIG",
+                        textColorArgb = Color.parseColor("#FFFFFF"),
+                        backgroundColorArgb = Color.parseColor("#5876A1"),
+                    ),
+                    ExtraButtonSpec.Toggle.State(
+                        text = "SMALL",
+                        textColorArgb = Color.parseColor("#FFFFFF"),
+                        backgroundColorArgb = Color.parseColor("#C5330D"),
+                    ),
+                ),
+            ),
         ),
         SINBAD_PORTER(
             displayName = "Sinbad & The Porter",
@@ -201,6 +255,9 @@ object UnmatchedCharacters {
     private val SETUP_ACCENT_ARGB_BY_NAME: Map<String, Int> =
         Fighter.entries.associate { it.displayName to it.setupAccentColorArgb }
 
+    private val EXTRA_BUTTON_BY_NAME: Map<String, ExtraButtonSpec?> =
+        Fighter.entries.associate { it.displayName to it.extraButton }
+
     init {
         for (f in Fighter.entries) {
             val pools = f.startingLifeSegments.size
@@ -212,6 +269,13 @@ object UnmatchedCharacters {
             require(f.startingLifeSegments.size <= 3) { "Fighter ${f.name}: máximo 3 pools" }
         }
     }
+
+    /**
+     * @return the optional floating extra button for this fighter, or null if it
+     * has none. Unknown names also return null.
+     */
+    fun extraButtonFor(characterName: String): ExtraButtonSpec? =
+        EXTRA_BUTTON_BY_NAME[characterName]
 
     /**
      * Border accent for setup card, spinner, and avatar for this fighter.

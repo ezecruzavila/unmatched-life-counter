@@ -15,11 +15,14 @@ object GameRules {
         TableLayoutPosition.BOTTOM_PANEL,
     )
 
-    /** 4 seats: left column, then right column (tabletop 2×2). */
+    /**
+     * 4 seats: row-major order so the in-game tabletop matches the
+     * 2×2 setup grid (P1 top-left, P2 top-right, P3 bottom-left, P4 bottom-right).
+     */
     private val POSITIONS_4P: List<TableLayoutPosition> = listOf(
         TableLayoutPosition.LEFT_PANEL_1,
-        TableLayoutPosition.LEFT_PANEL_2,
         TableLayoutPosition.RIGHT_PANEL_1,
+        TableLayoutPosition.LEFT_PANEL_2,
         TableLayoutPosition.RIGHT_PANEL_2,
     )
 
