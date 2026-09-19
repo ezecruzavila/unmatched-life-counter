@@ -1,7 +1,8 @@
 # UnmatchedCounter
 
-Life counter for the **Unmatched** board game. Available on **Android** and
-**iOS**, with the same characters, art and rules on both platforms.
+Life counter for the **Unmatched** board game. Available on **Android**,
+**iOS**, and as a **web app (PWA)**, with the same characters, art and rules on
+all platforms.
 
 ## Overview
 
@@ -12,6 +13,23 @@ The Porter…) get one independent life pool per side, all on the same panel.
 
 The UI is portrait-only and orientation-aware: each seat is rotated so the
 number always reads upright for the player sitting at that side of the table.
+
+## Features
+
+* 100% free with no ads
+* Supports 2 or 4 players on a shared-screen tabletop layout
+* Per-character starting life, including multi-pool fighters (e.g. Geralt & Dendelion, Raptors)
+* Character-specific floating tokens over the life counter (e.g. Muldoon's trap counter,
+  Schrödinger's Cat UNCERTAIN/OBSERVED toggle)
+* Hold-to-change life counters and quick game reset
+* Dark theme
+
+## Supported characters
+
+Alice & Jabberwock, Arthur & Merlin, Bigfoot & Jackalope, Bruce Lee, Bullseye,
+Chupacabras, Daredevil, Elektra, Eredin, Geralt & Dendelion, Houdini & Bess,
+Leshen & Wolves, Loki, Medusa, Muldoon & Workers, Raptors, Schrödinger's Cat,
+Sherlock & Dr. Watson, Sinbad & The Porter, Syndra, Taskmaster, Zed.
 
 ## Players
 
@@ -91,6 +109,16 @@ The actual life counter, shown once the game starts.
   exit (`✕`) button, both guarded by confirmation alerts. **Long-pressing**
   the hub toggles whether the system bars are hidden.
 
+## Building (Android)
+
+This is a standard Gradle Android project (Kotlin, MVVM, Hilt).
+
+```
+./gradlew :app:assembleDebug
+```
+
+The debug APK is written to `app/build/outputs/apk/debug/`.
+
 ## Generating an .ipa (iOS)
 
 The repo ships an end-to-end script that produces an **unsigned** `.ipa`
@@ -132,3 +160,32 @@ Steps:
    app, Finder sync, etc.).
 3. Open ReProvision Reborn → pick the IPA → sign in with your Apple ID →
    *Install*.
+
+## Web (PWA)
+
+A browser version lives under [`web/`](web/) — React + Vite + TypeScript, built
+as an installable, offline-capable Progressive Web App. It runs entirely on the
+device (no server) and mirrors the same roster, rules and rotated tabletop
+layout as the native apps.
+
+```
+cd web
+npm install
+npm run dev                                  # dev server on localhost:5173
+npm run build && npm run preview -- --host   # production build, reachable on the LAN
+```
+
+Deploy `web/dist/` to any static host (GitHub Pages, Netlify, …). On a device,
+open the URL and use the browser's "Add to Home Screen" to install it; once
+loaded it works fully offline. See [`web/README.md`](web/README.md) for details.
+
+## Contributing
+
+Feel free to use this code however you'd like.
+If you are interested in contributing, fork the code and open a pull request.
+Please also report any issues you encounter in the Issues tab — that is also a good
+place to look if you'd like to help with features or bug fixes.
+
+Adding a character is mostly a matter of adding an entry to the `UnmatchedCharacters`
+fighter list (display name, life pools, labels, art) plus the matching avatar/background
+drawables (and the matching entry in `web/src/domain/characters.ts` for the web port).
