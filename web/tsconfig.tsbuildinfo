@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/art.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/gamescreen.tsx","./src/components/playerpanel.tsx","./src/components/setupscreen.tsx","./src/domain/characters.ts","./src/domain/gamerules.ts","./src/domain/types.ts","./src/hooks/usehold.ts","./src/state/gamestore.ts","./vite.config.ts"],"version":"5.9.3"}
