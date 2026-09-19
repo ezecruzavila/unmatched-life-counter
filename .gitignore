@@ -10,15 +10,10 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/app/build
 /captures
 .externalNativeBuild
 .cxx
-
-# Web (PWA) port
-/web/node_modules
-/web/dist
-/web/dist-ssr
-/web/*.local
 
 # Claude / editor local
 /.claude
