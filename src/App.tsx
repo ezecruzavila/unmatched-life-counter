@@ -1,14 +1,15 @@
 import { useAppState } from './state/gameStore'
-import { SetupScreen } from './components/SetupScreen'
-import { GameScreen } from './components/GameScreen'
+import { HomeScreen } from './components/HomeScreen'
+import { TableScreen } from './components/TableScreen'
 
 export function App() {
   const { screen } = useAppState()
-  // Setup is ALWAYS portrait; the game is ALWAYS landscape — each rotates 90°
-  // when the device is held the "wrong" way for that screen.
+  // Home is ALWAYS portrait; the table (character selection + life counter, now
+  // unified) is ALWAYS landscape. Each frame rotates 90° when the device is held
+  // the "wrong" way for that screen.
   return (
     <div className={`app-frame app-frame--${screen}`}>
-      {screen === 'game' ? <GameScreen /> : <SetupScreen />}
+      {screen === 'table' ? <TableScreen /> : <HomeScreen />}
     </div>
   )
 }

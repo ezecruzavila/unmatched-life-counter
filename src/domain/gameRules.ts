@@ -53,13 +53,17 @@ export const EXTRA_BUTTON_CORNER: Record<TableLayoutPosition, 'left' | 'right'> 
 const POSITIONS_2P: TableLayoutPosition[] = ['TOP_PANEL', 'BOTTOM_PANEL']
 
 /**
- * 4 seats in a 2×2 grid matching the setup grid (P1 top-left, P2 top-right,
- * P3 bottom-left, P4 bottom-right). The top row is rotated 180°.
+ * 4 seats in a 2×2 grid matching the setup grid. Seating follows the game rule
+ * order 1,3,2,4 when reading the cells left-to-right, top-to-bottom:
+ *   P1 top-left    P3 top-right
+ *   P2 bottom-left P4 bottom-right
+ * So P1↔P2 face each other down the left column and P3↔P4 down the right column.
+ * The top row is rotated 180° so those two seats face the players across.
  */
 const POSITIONS_4P: TableLayoutPosition[] = [
   'TOP_LEFT',
-  'TOP_RIGHT',
   'BOTTOM_LEFT',
+  'TOP_RIGHT',
   'BOTTOM_RIGHT',
 ]
 

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { incrementLife, tapExtraButton } from '../state/gameStore'
 import { getCharacter } from '../domain/characters'
-import { art } from '../art'
+import { backgroundArt, extraArt } from '../art'
 import type { PlayerModel } from '../domain/types'
 import { useHold } from '../hooks/useHold'
 
@@ -39,7 +39,13 @@ export function PlayerPanel({
     <div
       className={`panel panel--rot-${((rotation % 360) + 360) % 360} panel--pools-${poolCount}`}
     >
-      <img className="panel__bg" src={art(character.background)} alt="" aria-hidden />
+      <img className="panel__bg" src={backgroundArt(character.background)} alt="" aria-hidden />
+
+      {/* Seat badge (P1, P2, …) pinned to the panel's OUTER top corner (the same
+          outer side as the extra button, away from the central hub). It sits
+          inside the rotated panel, so it reads upright for that player and never
+          collides with the centre. Doubles as a future turn indicator. */}
+      <span className={`panel__seat panel__seat--${extraCorner}`}>P{player.id + 1}</span>
 
       <div className="panel__pools">
         {player.lifeSegments.map((life, i) => (
@@ -123,7 +129,7 @@ function LifePool({
       {overlay && (
         <img
           className={`pool__overlay pool__overlay--${overlay.replace(/^raptors_|\.png$/g, '')}`}
-          src={art(overlay)}
+          src={extraArt(overlay)}
           alt=""
           aria-hidden
         />
@@ -160,7 +166,7 @@ function ExtraButton({
         onClick={() => tapExtraButton(playerId)}
         aria-label="Contador"
       >
-        <img src={art(spec.image)} alt="" aria-hidden />
+        <img src={extraArt(spec.image)} alt="" aria-hidden />
         <span className="extra__count">{value}</span>
       </button>
     )
