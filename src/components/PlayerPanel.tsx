@@ -1,23 +1,45 @@
+import type { CSSProperties } from 'react'
 import { incrementLife, tapExtraButton } from '../state/gameStore'
 import { getCharacter } from '../domain/characters'
-import { colorById } from '../domain/gameRules'
 import { art } from '../art'
 import type { PlayerModel } from '../domain/types'
 import { useHold } from '../hooks/useHold'
 
 /**
- * One player's life counter, rotated so it faces the seated player. The whole
- * panel is rotated via CSS (matching Android's RotateLayout), and the extra
- * button floats in the panel's outer corner.
+ * Per-pool width weights, ported from Android's applyLifeSegmentWeights:
+ * a solo fighter fills the panel; a duo splits it 15:9 (main gets more room
+ * than the sidekick); the Raptors split evenly in three.
  */
-export function PlayerPanel({ player, rotation }: { player: PlayerModel; rotation: number }) {
+const POOL_WEIGHTS: Record<number, number[]> = {
+  1: [1],
+  2: [15, 9],
+  3: [1, 1, 1],
+}
+
+/**
+ * One player's life counter, rotated so it faces the seated player. A single
+ * character background fills the panel; the life pools sit on top, split by the
+ * per-character weights and separated by a thin dark divider.
+ */
+export function PlayerPanel({
+  player,
+  rotation,
+  extraCorner,
+}: {
+  player: PlayerModel
+  rotation: number
+  /** Which bottom corner (panel space) the floating extra button sits in. */
+  extraCorner: 'left' | 'right'
+}) {
   const character = getCharacter(player.characterName)
-  const seatColor = colorById(player.colorId).color
+  const poolCount = player.lifeSegments.length
+  const weights = POOL_WEIGHTS[poolCount] ?? player.lifeSegments.map(() => 1)
 
   return (
-    <div className="panel" style={{ transform: `rotate(${rotation}deg)` }}>
+    <div
+      className={`panel panel--rot-${((rotation % 360) + 360) % 360} panel--pools-${poolCount}`}
+    >
       <img className="panel__bg" src={art(character.background)} alt="" aria-hidden />
-      <div className="panel__tint" style={seatColor ? { boxShadow: `inset 0 0 0 4px ${seatColor}` } : undefined} />
 
       <div className="panel__pools">
         {player.lifeSegments.map((life, i) => (
@@ -25,9 +47,11 @@ export function PlayerPanel({ player, rotation }: { player: PlayerModel; rotatio
             key={i}
             playerId={player.id}
             segmentIndex={i}
+            weight={weights[i]}
+            divider={i > 0}
             label={player.lifeSegmentLabels[i]}
             life={life}
-            max={player.lifeSegmentMaximums[i]}
+            overlay={character.poolOverlays?.[i]}
           />
         ))}
       </div>
@@ -37,6 +61,7 @@ export function PlayerPanel({ player, rotation }: { player: PlayerModel; rotatio
           playerId={player.id}
           spec={character.extraButton}
           value={player.extraButtonValue}
+          corner={extraCorner}
         />
       )}
     </div>
@@ -46,44 +71,69 @@ export function PlayerPanel({ player, rotation }: { player: PlayerModel; rotatio
 function LifePool({
   playerId,
   segmentIndex,
+  weight,
+  divider,
   label,
   life,
-  max,
+  overlay,
 }: {
   playerId: number
   segmentIndex: number
+  weight: number
+  divider: boolean
   label: string
   life: number
-  max: number
+  /** Optional per-pool silhouette (e.g. a Raptor) shown over the shared bg. */
+  overlay?: string
 }) {
   const dec = useHold(() => incrementLife(playerId, -1, segmentIndex))
   const inc = useHold(() => incrementLife(playerId, +1, segmentIndex))
+  const dead = life <= 0
+
+  const style: CSSProperties = { flexGrow: weight, flexBasis: 0 }
+  const classes = ['pool']
+  if (dead) classes.push('pool--dead')
+  if (overlay) classes.push('pool--has-overlay')
 
   return (
-    <div className="pool">
+    <div className={classes.join(' ')} style={style}>
+      {divider && <span className="pool__divider" aria-hidden />}
+
+      {/* Invisible tap zones: top half increments, bottom half decrements
+          (matching the Android counter's +/− hold buttons). */}
       <button
         type="button"
-        className="pool__btn pool__btn--minus"
-        aria-label={`Restar ${label}`}
-        {...dec}
-      >
-        −
-      </button>
-      <div className="pool__center">
-        <span className="pool__value">{life}</span>
-        <span className="pool__label">
-          {label}
-          {max ? ` · ${max}` : ''}
-        </span>
-      </div>
-      <button
-        type="button"
-        className="pool__btn pool__btn--plus"
+        className="pool__zone pool__zone--plus"
         aria-label={`Sumar ${label}`}
         {...inc}
-      >
-        +
-      </button>
+      />
+      <button
+        type="button"
+        className="pool__zone pool__zone--minus"
+        aria-label={`Restar ${label}`}
+        {...dec}
+      />
+
+      {/* Character/pool name chip near the top, over a dark scrim for legibility. */}
+      {label && <span className="pool__label">{label}</span>}
+
+      {/* Silhouette layer (Raptors): anchored to the bottom of the pool. A
+          per-asset modifier class (e.g. pool__overlay--charlie) allows tuning
+          an individual silhouette's scale. */}
+      {overlay && (
+        <img
+          className={`pool__overlay pool__overlay--${overlay.replace(/^raptors_|\.png$/g, '')}`}
+          src={art(overlay)}
+          alt=""
+          aria-hidden
+        />
+      )}
+
+      {/* Life number. Centred for normal pools; raised above the silhouette
+          for overlay pools. */}
+      <div className="pool__content">
+        <span className="pool__value">{life}</span>
+      </div>
     </div>
   )
 }
@@ -92,16 +142,21 @@ function ExtraButton({
   playerId,
   spec,
   value,
+  corner,
 }: {
   playerId: number
   spec: NonNullable<ReturnType<typeof getCharacter>['extraButton']>
   value: number
+  /** Bottom corner (panel space) to pin the button to. */
+  corner: 'left' | 'right'
 }) {
+  const cornerClass = `extra--corner-${corner}`
+
   if (spec.kind === 'counter') {
     return (
       <button
         type="button"
-        className="extra extra--counter"
+        className={`extra extra--counter ${cornerClass}`}
         onClick={() => tapExtraButton(playerId)}
         aria-label="Contador"
       >
@@ -115,7 +170,7 @@ function ExtraButton({
   return (
     <button
       type="button"
-      className="extra extra--toggle"
+      className={`extra extra--toggle ${cornerClass}`}
       onClick={() => tapExtraButton(playerId)}
       style={{ backgroundColor: s.backgroundColor, color: s.textColor }}
     >

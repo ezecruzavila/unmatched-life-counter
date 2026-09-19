@@ -12,33 +12,55 @@ export const SUPPORTED_PLAYER_COUNTS = [2, 4] as const
 export type TableLayoutPosition =
   | 'TOP_PANEL'
   | 'BOTTOM_PANEL'
-  | 'LEFT_PANEL_1'
-  | 'LEFT_PANEL_2'
-  | 'RIGHT_PANEL_1'
-  | 'RIGHT_PANEL_2'
+  | 'TOP_LEFT'
+  | 'TOP_RIGHT'
+  | 'BOTTOM_LEFT'
+  | 'BOTTOM_RIGHT'
 
-/** Rotation (degrees) applied to each seat so it faces its player. From Android defaults. */
+/**
+ * Rotation (degrees) applied to each seat so it faces its player. The tablet
+ * lies flat on the table: the top row faces the far side (rotated 180°) and the
+ * bottom row faces the near side (0°).
+ */
 export const SEAT_ROTATION: Record<TableLayoutPosition, number> = {
   TOP_PANEL: 180,
   BOTTOM_PANEL: 0,
-  LEFT_PANEL_1: 270,
-  LEFT_PANEL_2: 270,
-  RIGHT_PANEL_1: 90,
-  RIGHT_PANEL_2: 90,
+  TOP_LEFT: 180,
+  TOP_RIGHT: 180,
+  BOTTOM_LEFT: 0,
+  BOTTOM_RIGHT: 0,
 }
 
-/** 2 seats: face-to-face across the table (top vs bottom). */
+/**
+ * Which bottom corner (in the panel's own, un-rotated space) the floating extra
+ * button sits in, so that after this seat's rotation it lands in the bottom
+ * corner furthest from the table centre — from the seated player's view.
+ * Ported from Android's anchorExtraButtonToOuterCorner, derived for the 0°/180°
+ * layout: 180° seats have their outer side mirrored, so left/right flips.
+ */
+export const EXTRA_BUTTON_CORNER: Record<TableLayoutPosition, 'left' | 'right'> = {
+  // Bottom row (0°): outer side maps straight through.
+  BOTTOM_PANEL: 'right',
+  BOTTOM_LEFT: 'left',
+  BOTTOM_RIGHT: 'right',
+  // Top row (180°): outer side is mirrored.
+  TOP_PANEL: 'left',
+  TOP_LEFT: 'right',
+  TOP_RIGHT: 'left',
+}
+
+/** 2 seats: face-to-face across the table (top rotated 180°, bottom upright). */
 const POSITIONS_2P: TableLayoutPosition[] = ['TOP_PANEL', 'BOTTOM_PANEL']
 
 /**
- * 4 seats in row-major order matching the 2x2 setup grid
- * (P1 top-left, P2 top-right, P3 bottom-left, P4 bottom-right).
+ * 4 seats in a 2×2 grid matching the setup grid (P1 top-left, P2 top-right,
+ * P3 bottom-left, P4 bottom-right). The top row is rotated 180°.
  */
 const POSITIONS_4P: TableLayoutPosition[] = [
-  'LEFT_PANEL_1',
-  'RIGHT_PANEL_1',
-  'LEFT_PANEL_2',
-  'RIGHT_PANEL_2',
+  'TOP_LEFT',
+  'TOP_RIGHT',
+  'BOTTOM_LEFT',
+  'BOTTOM_RIGHT',
 ]
 
 export function tabletopPositionsFor(playerCount: number): TableLayoutPosition[] {

@@ -17,6 +17,8 @@ export default defineConfig({
         theme_color: '#121212',
         background_color: '#121212',
         display: 'standalone',
+        // Both device orientations are allowed; the app rotates each screen
+        // itself (setup → portrait, game → landscape) via CSS.
         orientation: 'any',
         start_url: './',
         scope: './',

@@ -74,6 +74,7 @@ export const CHARACTERS: Character[] = [
     avatar: 'avatar_raptors.png',
     startingLifeSegments: [7, 7, 7],
     setupAccentColor: '#AF9E49',
+    poolOverlays: ['raptors_blue.png', 'raptors_echo.png', 'raptors_charlie.png'],
   },
   {
     displayName: 'Eredin',

@@ -63,6 +63,12 @@ export interface Character {
   setupAccentColor: string
   /** Optional floating extra button; undefined = none. */
   extraButton?: ExtraButtonSpec
+  /**
+   * Optional per-pool overlay art filenames (one per life pool, same order as
+   * segmentLabels). Used by the Raptors: the shared background is the jungle and
+   * each pool shows its own dinosaur silhouette on top. Undefined = no overlays.
+   */
+  poolOverlays?: string[]
 }
 
 /** One player's colored seat color. */

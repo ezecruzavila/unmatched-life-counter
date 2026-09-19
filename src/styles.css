@@ -5,6 +5,8 @@
   --field-fill: #161618;
   --accent: #2db7b7;
   --accent-warm: #f0843d;
+  --accent-blue: #00b0ff;
+  --border-disabled: #3a3a3d;
   color-scheme: dark;
 }
 
@@ -22,7 +24,7 @@ body,
 }
 
 body {
-  background: var(--bg);
+  background: #000;
   color: #fff;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   overscroll-behavior: none;
@@ -31,145 +33,304 @@ body {
   touch-action: manipulation;
 }
 
+/*
+ * Each screen has a FIXED orientation regardless of how the device is held:
+ *   - Setup  is ALWAYS portrait.
+ *   - Game   is ALWAYS landscape.
+ * When the device is held the "wrong" way for the current screen, its frame is
+ * sized to the swapped viewport dimensions and rotated 90° so it reads upright.
+ */
+.app-frame {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  transform-origin: top left;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* Device in LANDSCAPE but showing the portrait SETUP → rotate the setup. */
+@media (orientation: landscape) {
+  .app-frame--setup {
+    width: 100vh;
+    height: 100vw;
+    transform: translateX(100vw) rotate(90deg);
+  }
+}
+
+/* Device in PORTRAIT but showing the landscape GAME → rotate the game. */
+@media (orientation: portrait) {
+  .app-frame--game {
+    width: 100vh;
+    height: 100vw;
+    transform: translateX(100vw) rotate(90deg);
+  }
+}
+
 /* ============================= SETUP ============================= */
 
 .setup {
-  min-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: max(16px, env(safe-area-inset-top)) 16px 24px;
+  padding: max(20px, env(safe-area-inset-top)) 16px 20px;
+  overflow-y: auto;
 }
 
-.setup__header {
+.setup__title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Two-tone divider with a centre diamond. */
+.setup__divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 8px 22px;
+}
+.setup__divider-line {
+  flex: 1;
+  height: 2px;
+}
+.setup__divider-line--left {
+  background: var(--accent);
+}
+.setup__divider-line--right {
+  background: var(--accent-warm);
+}
+.setup__diamond {
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+  background: #fff;
+}
+
+/* Player-count section. */
+.setup__count {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 24px;
 }
-
-.setup__logo {
-  height: 64px;
-  object-fit: contain;
+.setup__count-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #cfd3d6;
 }
-
-.setup__count {
+.setup__count-buttons {
   display: flex;
   gap: 12px;
+  width: 100%;
+  max-width: 460px;
 }
 
 .count-btn {
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: 2px solid var(--border-gray);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  border-radius: 12px;
+  border: 2px solid transparent;
   background: #1f1f22;
   color: #fff;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 }
-
+.count-btn__icon {
+  opacity: 0.9;
+}
 .count-btn--active {
   border-color: var(--accent);
-  background: #16302f;
+  background: #14262a;
 }
 
+/* Card grid — always a 2×2 layout; unused seats are dimmed, not removed. */
 .setup__grid {
+  position: relative;
   flex: 1;
   display: grid;
-  gap: 14px;
-  align-content: start;
+  gap: 10px;
+  align-content: stretch;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
 }
 
-.setup__grid--2 {
-  grid-template-columns: 1fr;
+/* Circular logo where the four cards meet (4-player mode). Its diameter matches
+   the four bites (2 × bite-r) plus a touch, so it sits cleanly in the gap. */
+.setup__center-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
 }
 
-.setup__grid--4 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
+/*
+ * Player card: filled dark panel, coloured border, avatar + label + dropdown.
+ * A circular "bite" is carved from the corner facing the centre hub so the four
+ * cards frame the logo. The bite is done with a radial-gradient mask; a matching
+ * ::before draws the coloured border that follows the bitten silhouette.
+ */
 .pcard {
-  background: var(--card-bg);
-  border: 2px solid var(--border-gray);
-  border-radius: 16px;
-  padding: 14px;
+  --bite-r: 66px;
+  --bx: 100%;
+  --by: 100%;
+  --pcard-border: var(--border-gray);
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 4%;
+  padding: 6% 6%;
+  background: transparent;
+}
+.pcard--bite-br { --bx: 100%; --by: 100%; }
+.pcard--bite-bl { --bx: 0%; --by: 100%; }
+.pcard--bite-tr { --bx: 100%; --by: 0%; }
+.pcard--bite-tl { --bx: 0%; --by: 0%; }
+
+/*
+ * Two stacked layers, both clipped to the same "rounded rect minus corner disk"
+ * mask. The lower layer is the coloured border; the upper (inset by the border
+ * width) is the card fill — so the border follows the bitten silhouette on
+ * every edge including the circular bite.
+ */
+.pcard::before,
+.pcard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  -webkit-mask: radial-gradient(
+    circle var(--bite-r) at var(--bx) var(--by),
+    transparent 0 calc(var(--bite-r) - 0.5px),
+    #000 var(--bite-r)
+  );
+  mask: radial-gradient(
+    circle var(--bite-r) at var(--bx) var(--by),
+    transparent 0 calc(var(--bite-r) - 0.5px),
+    #000 var(--bite-r)
+  );
+}
+/* Coloured border layer (fills the whole bitten silhouette). */
+.pcard::before {
+  background: var(--pcard-border, var(--border-gray));
+  z-index: 0;
+}
+/* Dark fill, inset by the 3px border, with a bite radius 3px larger so the
+   ring stays a uniform 3px all around — including along the circular arc. */
+.pcard::after {
+  inset: 3px;
+  border-radius: 17px;
+  background: var(--card-bg);
+  --inner-r: calc(var(--bite-r) + 3px);
+  -webkit-mask: radial-gradient(
+    circle var(--inner-r) at var(--bx) var(--by),
+    transparent 0 calc(var(--inner-r) - 0.5px),
+    #000 var(--inner-r)
+  );
+  mask: radial-gradient(
+    circle var(--inner-r) at var(--bx) var(--by),
+    transparent 0 calc(var(--inner-r) - 0.5px),
+    #000 var(--inner-r)
+  );
+  z-index: 0;
 }
 
-.pcard__top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* Card contents sit above the ::before/::after layers. */
+.pcard > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Seat not in play (2-player mode): dim it and block interaction. */
+.pcard--disabled {
+  opacity: 0.4;
+  filter: grayscale(0.6) brightness(0.7);
+  pointer-events: none;
 }
 
 .pcard__avatar {
-  width: 56px;
-  height: 56px;
+  width: clamp(72px, 34%, 120px);
+  aspect-ratio: 1;
+  height: auto;
   border-radius: 50%;
   border: 3px solid var(--border-gray);
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.pcard__meta {
-  display: flex;
-  flex-direction: column;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .pcard__seat {
   font-weight: 700;
-  font-size: 15px;
+  font-size: clamp(16px, 2.6vw, 22px);
 }
 
-.pcard__life {
-  color: #9fa8ac;
-  font-size: 13px;
-}
-
-.pcard__select {
+.pcard__select-wrap {
+  position: relative;
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--field-fill);
-  color: #fff;
+  max-width: 340px;
+  height: clamp(46px, 9%, 60px);
+  min-height: 46px;
   border: 2px solid var(--border-gray);
-  font-size: 15px;
-}
-
-.pcard__colors {
+  border-radius: 12px;
+  background: var(--field-fill);
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
 }
-
-.swatch {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid transparent;
+.pcard__select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 100%;
+  padding: 0 38px 0 16px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: clamp(15px, 2.4vw, 19px);
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
 }
-
-.swatch--active {
-  border-color: #fff;
-  outline: 2px solid #000;
+.pcard__chevron {
+  position: absolute;
+  right: 14px;
+  pointer-events: none;
+  color: #cfd3d6;
+  font-size: 16px;
 }
 
 .setup__start {
-  align-self: center;
-  padding: 14px 40px;
-  font-size: 18px;
-  font-weight: 700;
-  border-radius: 999px;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 4px 0;
+  padding: 16px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  border-radius: 14px;
   border: none;
-  background: linear-gradient(90deg, var(--accent), var(--accent-warm));
+  background: var(--accent-blue, #00b0ff);
   color: #fff;
   cursor: pointer;
 }
@@ -177,13 +338,18 @@ body {
 /* ============================= GAME TABLE ============================= */
 
 .table {
-  position: fixed;
+  position: absolute;
   inset: 0;
   display: grid;
   background: #000;
-  gap: 4px;
+  gap: 10px;
+  padding: 10px;
 }
 
+/*
+ * The app is always portrait (like the native app). Seats face their player via
+ * content rotation (top row 180°), never by rotating the whole screen.
+ */
 .table--2 {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr;
@@ -196,13 +362,14 @@ body {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    'left_panel_1 right_panel_1'
-    'left_panel_2 right_panel_2';
+    'top_left top_right'
+    'bottom_left bottom_right';
 }
 
 .table__seat {
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 .table__seat--top_panel {
@@ -211,22 +378,22 @@ body {
 .table__seat--bottom_panel {
   grid-area: bottom_panel;
 }
-.table__seat--left_panel_1 {
-  grid-area: left_panel_1;
+.table__seat--top_left {
+  grid-area: top_left;
 }
-.table__seat--right_panel_1 {
-  grid-area: right_panel_1;
+.table__seat--top_right {
+  grid-area: top_right;
 }
-.table__seat--left_panel_2 {
-  grid-area: left_panel_2;
+.table__seat--bottom_left {
+  grid-area: bottom_left;
 }
-.table__seat--right_panel_2 {
-  grid-area: right_panel_2;
+.table__seat--bottom_right {
+  grid-area: bottom_right;
 }
 
 /* Center hub with reset / setup controls. */
 .table__hub {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -252,15 +419,28 @@ body {
 
 /* ============================= PANEL ============================= */
 
+/*
+ * The panel fills its seat and is rotated to face the seated player: the top
+ * row is upside-down (180°) so it reads for the player across the table, the
+ * bottom row is upright (0°). Only 0°/180° are used, so the panel keeps the
+ * seat's dimensions — no width/height swap needed.
+ */
 .panel {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform-origin: center center;
 }
 
+.panel--rot-0 {
+  transform: rotate(0deg);
+}
+.panel--rot-180 {
+  transform: rotate(180deg);
+}
+
+/* Single character background filling the whole panel (centre-cropped). */
 .panel__bg {
   position: absolute;
   inset: 0;
@@ -270,48 +450,34 @@ body {
   z-index: 0;
 }
 
-.panel__tint {
+.panel__pools {
   position: absolute;
   inset: 0;
   z-index: 1;
-  pointer-events: none;
-  background: rgba(0, 0, 0, 0.28);
-}
-
-.panel__pools {
-  position: relative;
-  z-index: 2;
   display: flex;
-  gap: 8px;
   width: 100%;
   height: 100%;
 }
 
+/*
+ * The life pools sit side by side over the shared background, split by the
+ * per-character weights (a duo gets 15:9, main vs sidekick). A thin dark
+ * divider separates adjacent pools.
+ */
 .pool {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: stretch;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  /* Size text against THIS pool so numbers scale with it and never overflow,
+     whatever the player count or panel rotation. */
+  container-type: size;
 }
 
-.pool__btn {
-  border: none;
-  background: transparent;
-  color: #fff;
-  font-size: clamp(28px, 6vw, 56px);
-  font-weight: 300;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-}
-
-.pool__btn:active {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.pool__center {
+/* Non-interactive content stack filling the pool. */
+.pool__content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -319,33 +485,141 @@ body {
   pointer-events: none;
 }
 
+/*
+ * Overlay pools (Raptors): the silhouette is a large decorative layer anchored
+ * to the BOTTOM of the pool (bigger, no empty gap), and the number sits centred
+ * over the upper portion. The name chip (.pool__label) stays pinned at the top.
+ */
+.pool__overlay {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  /* All three share the SAME height and auto width, anchored at the bottom, so
+     they line up and look proportioned despite different aspect ratios. */
+  height: 26%;
+  width: auto;
+  max-width: 80%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0.95;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Charlie's silhouette is more compact — bump it ~10% to match the others. */
+.pool__overlay--charlie {
+  height: 28.6%;
+}
+.pool--has-overlay .pool__content {
+  /* Number centred in the middle band, clear of both name chip and silhouette. */
+  justify-content: center;
+  padding-top: 8%;
+}
+.pool--has-overlay .pool__value {
+  font-size: clamp(30px, 24cqh, 120px);
+}
+
+/* Thin dark divider on the leading edge of every pool after the first. */
+.pool__divider {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Invisible top/bottom tap zones: top increments, bottom decrements. */
+.pool__zone {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+.pool__zone--plus {
+  top: 0;
+}
+.pool__zone--minus {
+  bottom: 0;
+}
+.pool__zone:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Name chip near the top, over a dark scrim for legibility. */
+.pool__label {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: clamp(9px, 9cqh, 20px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Big life number, centred in the pool. */
 .pool__value {
-  font-size: clamp(48px, 16vw, 140px);
+  /* Base (solo fighter): scale with the pool height. */
+  font-size: clamp(40px, 40cqh, 220px);
   font-weight: 800;
-  line-height: 1;
+  line-height: 0.95;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
-.pool__label {
-  margin-top: 4px;
-  font-size: clamp(10px, 2.4vw, 16px);
-  letter-spacing: 0.06em;
-  color: #fff;
-  opacity: 0.85;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-  text-align: center;
+/* Multi-pool fighters have narrower columns, so cap the number by the pool
+   WIDTH too (cqw) to stop two-digit values from overflowing/colliding. */
+.panel--pools-2 .pool__value {
+  font-size: clamp(32px, 46cqw, 120px);
+}
+.panel--pools-3 .pool__value {
+  font-size: clamp(28px, 52cqw, 96px);
+}
+
+/* A dead pool (0 life) is covered by a heavy dark overlay; its number hides. */
+.pool--dead::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.82);
+  pointer-events: none;
+}
+.pool--dead .pool__value {
+  visibility: hidden;
 }
 
 /* ============================= EXTRA BUTTON ============================= */
 
 .extra {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
+  bottom: 10px;
+  z-index: 4;
   border: none;
   cursor: pointer;
   padding: 0;
+}
+.extra--corner-left {
+  left: 10px;
+}
+.extra--corner-right {
+  right: 10px;
 }
 
 .extra--toggle {
@@ -382,9 +656,60 @@ body {
   margin-top: 8px; /* triangle art is widest at the bottom */
 }
 
-@media (orientation: portrait) {
-  /* On a phone held upright, the 2-player face-off still reads best stacked. */
-  .setup__grid--4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* ============================= CONFIRM DIALOG ============================= */
+
+.dialog__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 24px;
+}
+
+.dialog {
+  width: min(420px, 100%);
+  background: #1f1f22;
+  border: 1px solid #3a3a3d;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.dialog__title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.dialog__message {
+  margin: 0 0 20px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #cfd3d6;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dialog__btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 2px solid var(--border-gray);
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dialog__btn--primary {
+  border-color: transparent;
+  background: linear-gradient(90deg, var(--accent), var(--accent-warm));
 }
