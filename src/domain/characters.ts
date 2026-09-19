@@ -41,6 +41,7 @@ export const CHARACTERS: Character[] = [
     avatar: 'avatar_syndra.png',
     startingLifeSegments: [14],
     setupAccentColor: '#3D25A8',
+    disabled: true,
   },
   {
     displayName: 'Taskmaster',
@@ -77,7 +78,7 @@ export const CHARACTERS: Character[] = [
     poolOverlays: ['raptors_blue.png', 'raptors_echo.png', 'raptors_charlie.png'],
   },
   {
-    displayName: 'Eredin',
+    displayName: 'Eredin & Red Riders',
     segmentLabels: ['EREDIN'],
     background: 'bg_eredin.png',
     avatar: 'avatar_eredin.png',
@@ -154,6 +155,7 @@ export const CHARACTERS: Character[] = [
     avatar: 'avatar_elektra.png',
     startingLifeSegments: [8],
     setupAccentColor: '#770A08',
+    disabled: true,
   },
   {
     displayName: 'Zed',
@@ -172,7 +174,7 @@ export const CHARACTERS: Character[] = [
     setupAccentColor: '#2E302D',
   },
   {
-    displayName: 'Medusa',
+    displayName: 'Medusa & Arpies',
     segmentLabels: ['MEDUSA'],
     background: 'bg_medusa.png',
     avatar: 'avatar_medusa.png',
@@ -206,8 +208,14 @@ export const CHARACTERS: Character[] = [
 
 const BY_NAME = new Map(CHARACTERS.map((c) => [c.displayName, c]))
 
-/** Fighter names sorted alphabetically (case-insensitive) for spinner display. */
-export const CHARACTER_NAMES_SORTED: string[] = CHARACTERS.map((c) => c.displayName).sort(
+/** Selectable fighters — everything except those flagged `disabled`. */
+export const SELECTABLE_CHARACTERS: Character[] = CHARACTERS.filter((c) => !c.disabled)
+
+/**
+ * Selectable fighter names sorted alphabetically (case-insensitive) for the
+ * selection dropdown. Disabled fighters are omitted.
+ */
+export const CHARACTER_NAMES_SORTED: string[] = SELECTABLE_CHARACTERS.map((c) => c.displayName).sort(
   (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
 )
 
@@ -217,7 +225,10 @@ export function getCharacter(name: string): Character {
   return c
 }
 
-/** Default character for seat `index` (enum order), falling back to the first. */
+/**
+ * Default character for seat `index`, walking the selectable roster (skipping
+ * disabled fighters) and falling back to the first selectable one.
+ */
 export function defaultCharacterName(index: number): string {
-  return CHARACTERS[index]?.displayName ?? CHARACTERS[0].displayName
+  return SELECTABLE_CHARACTERS[index]?.displayName ?? SELECTABLE_CHARACTERS[0].displayName
 }

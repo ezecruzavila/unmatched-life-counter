@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { incrementLife, tapExtraButton } from '../state/gameStore'
+import { incrementLife, tapExtraButton, advanceTurn, defeatPlayer } from '../state/gameStore'
 import { getCharacter } from '../domain/characters'
 import { backgroundArt, extraArt } from '../art'
 import type { PlayerModel } from '../domain/types'
@@ -25,27 +25,74 @@ export function PlayerPanel({
   player,
   rotation,
   extraCorner,
+  isTurn,
+  onDefeatedClick,
 }: {
   player: PlayerModel
   rotation: number
   /** Which bottom corner (panel space) the floating extra button sits in. */
   extraCorner: 'left' | 'right'
+  /** Whether it's this player's turn (drives the badge highlight + tap-to-pass). */
+  isTurn: boolean
+  /** Tapping the DEAD legend asks to revive; handled by the parent (popup). */
+  onDefeatedClick: () => void
 }) {
   const character = getCharacter(player.characterName)
   const poolCount = player.lifeSegments.length
   const weights = POOL_WEIGHTS[poolCount] ?? player.lifeSegments.map(() => 1)
+  // Every tracked pool at 0 → eligible to be marked defeated (manual, since some
+  // sidekicks aren't tracked here). Once defeated, they're out of the rotation.
+  const allPoolsOut = player.lifeSegments.every((life) => life <= 0)
 
   return (
     <div
-      className={`panel panel--rot-${((rotation % 360) + 360) % 360} panel--pools-${poolCount}`}
+      className={`panel panel--rot-${((rotation % 360) + 360) % 360} panel--pools-${poolCount}${
+        player.defeated ? ' panel--defeated' : ''
+      }`}
     >
       <img className="panel__bg" src={backgroundArt(character.background)} alt="" aria-hidden />
 
       {/* Seat badge (P1, P2, …) pinned to the panel's OUTER top corner (the same
           outer side as the extra button, away from the central hub). It sits
-          inside the rotated panel, so it reads upright for that player and never
-          collides with the centre. Doubles as a future turn indicator. */}
-      <span className={`panel__seat panel__seat--${extraCorner}`}>P{player.id + 1}</span>
+          inside the rotated panel, so it reads upright for that player. It's the
+          TURN indicator + control: highlighted (red outline) on this player's
+          turn, and tapping it (only enabled on your turn) passes to the next
+          living player. Disabled otherwise. */}
+      <button
+        type="button"
+        className={`panel__seat panel__seat--${extraCorner}${isTurn ? ' panel__seat--turn' : ''}`}
+        onClick={advanceTurn}
+        disabled={!isTurn}
+        aria-label={isTurn ? `Player ${player.id + 1} — end turn` : `Player ${player.id + 1}`}
+        title={isTurn ? 'End turn' : undefined}
+      >
+        P{player.id + 1}
+      </button>
+
+      {/* Defeat control, shown once every tracked pool hits 0. DEFEATED? marks
+          the player out (leaves the rotation); after that it reads DEAD and a
+          tap asks to revive. */}
+      {player.defeated ? (
+        <button
+          type="button"
+          className="panel__defeat panel__defeat--dead"
+          onClick={onDefeatedClick}
+          aria-label={`Player ${player.id + 1} is dead — revive?`}
+        >
+          DEAD
+        </button>
+      ) : (
+        allPoolsOut && (
+          <button
+            type="button"
+            className="panel__defeat"
+            onClick={() => defeatPlayer(player.id)}
+            aria-label={`Mark player ${player.id + 1} defeated`}
+          >
+            DEFEATED?
+          </button>
+        )
+      )}
 
       <div className="panel__pools">
         {player.lifeSegments.map((life, i) => (

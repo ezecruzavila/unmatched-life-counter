@@ -6,6 +6,7 @@ import {
   confirmPlayer,
   resetGame,
   backToHome,
+  revivePlayer,
 } from '../state/gameStore'
 import { SEAT_ROTATION, EXTRA_BUTTON_CORNER, tabletopPositionsFor } from '../domain/gameRules'
 import { CHARACTER_NAMES_SORTED, getCharacter } from '../domain/characters'
@@ -24,10 +25,12 @@ type Confirm = 'reset' | 'exit' | null
  * chosen character) or exits to Home.
  */
 export function TableScreen() {
-  const { setupPlayers, playerCount, models } = useAppState()
+  const { setupPlayers, playerCount, models, currentTurn } = useAppState()
   const positions = tabletopPositionsFor(playerCount)
   const [confirm, setConfirm] = useState<Confirm>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  // Player id whose DEAD legend was tapped — drives the "Revive player?" popup.
+  const [reviveId, setReviveId] = useState<number | null>(null)
   const closeMenu = () => setMenuOpen(false)
 
   const active = setupPlayers.slice(0, playerCount)
@@ -49,6 +52,8 @@ export function TableScreen() {
                   player={model}
                   rotation={rotation}
                   extraCorner={EXTRA_BUTTON_CORNER[position]}
+                  isTurn={currentTurn === model.id}
+                  onDefeatedClick={() => setReviveId(model.id)}
                 />
               ) : (
                 <SeatSelector player={setup} rotation={rotation} />
@@ -124,6 +129,18 @@ export function TableScreen() {
             if (confirm === 'reset') resetGame()
             else backToHome()
             setConfirm(null)
+          }}
+        />
+      )}
+
+      {reviveId !== null && (
+        <ConfirmDialog
+          title="Revive player"
+          message="Revive this player?"
+          onCancel={() => setReviveId(null)}
+          onConfirm={() => {
+            revivePlayer(reviveId)
+            setReviveId(null)
           }}
         />
       )}

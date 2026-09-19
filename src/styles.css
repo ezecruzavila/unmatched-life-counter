@@ -638,16 +638,17 @@ body {
 }
 
 /*
- * Seat badge (P1, P2, …) in the panel's top-right corner. Same typography as the
- * hero name chips (.pool__label) over a dark scrim for legibility. Non-interactive
- * so taps pass through to the increment zone beneath it. A future turn indicator
- * can style this (e.g. an --active modifier).
+ * Seat badge (P1, P2, …) in the panel's top OUTER corner. Same typography as the
+ * hero name chips (.pool__label) over a dark scrim for legibility. It's also the
+ * TURN control: a button that's only enabled on this player's turn (red outline)
+ * and, when tapped, passes the turn to the next living player.
  */
 .panel__seat {
   position: absolute;
   top: 6%;
   z-index: 4;
   padding: 3px 10px;
+  border: 2px solid transparent;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.55);
   font-size: clamp(11px, 3.2vh, 22px);
@@ -655,7 +656,22 @@ body {
   letter-spacing: 0.04em;
   color: #fff;
   white-space: nowrap;
+  font-family: inherit;
+  /* Disabled (not this player's turn): inert, just a label. */
   pointer-events: none;
+  cursor: default;
+}
+/* Active turn: red outline + glow, and now tappable to end the turn. */
+.panel__seat--turn {
+  pointer-events: auto;
+  cursor: pointer;
+  border-color: #e53935;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.72);
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.35), 0 0 14px rgba(229, 57, 53, 0.6);
+}
+.panel__seat--turn:active {
+  background: rgba(229, 57, 53, 0.4);
 }
 /* Pinned to the seat's OUTER top corner (away from the central hub) — the same
    outer side the extra button uses. This keeps every badge clear of the centre:
@@ -811,6 +827,53 @@ body {
 }
 .pool--dead .pool__value {
   visibility: hidden;
+}
+
+/* ============================= DEFEAT / DEAD ============================= */
+
+/*
+ * Defeat control, centred over the panel once every tracked pool is at 0.
+ * DEFEATED? confirms the knockout (removing the player from the turn rotation);
+ * afterwards it reads DEAD and a tap opens the revive popup.
+ */
+.panel__defeat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  padding: 8px 18px;
+  border: 2px solid #e53935;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(13px, 4vh, 26px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+.panel__defeat:active {
+  background: rgba(229, 57, 53, 0.4);
+}
+
+/* Once dead: a heavier, blood-red seal. The whole panel is darkened by
+   .panel--defeated so the DEAD legend stands out over a graveyard shadow. */
+.panel__defeat--dead {
+  background: rgba(140, 0, 0, 0.85);
+  border-color: #ff5252;
+  letter-spacing: 0.14em;
+}
+
+/* Darken the whole seat of a defeated player (all pools already show their own
+   dead scrim; this dims the background art + labels behind the DEAD seal). */
+.panel--defeated .panel__bg {
+  filter: grayscale(0.85) brightness(0.45);
+}
+.panel--defeated .pool__label,
+.panel--defeated .pool__overlay {
+  opacity: 0.35;
 }
 
 /* ============================= EXTRA BUTTON ============================= */

@@ -64,6 +64,12 @@ export interface Character {
   /** Optional floating extra button; undefined = none. */
   extraButton?: ExtraButtonSpec
   /**
+   * When true, this fighter is hidden from the selection list and never used as
+   * a seat default. Still kept in the roster so persisted state referencing it
+   * (e.g. an old saved game) resolves without error.
+   */
+  disabled?: boolean
+  /**
    * Optional per-pool overlay art filenames (one per life pool, same order as
    * segmentLabels). Used by the Raptors: the shared background is the jungle and
    * each pool shows its own dinosaur silhouette on top. Undefined = no overlays.
@@ -98,4 +104,11 @@ export interface PlayerModel {
   colorId: string
   /** Current extra-button value, or null if this character has none. */
   extraButtonValue: number | null
+  /**
+   * Whether this player has been knocked out of the game. Set manually via the
+   * DEFEATED? button (once every tracked pool is at 0 — manual because some
+   * sidekicks aren't tracked in the app), which also drops them from the turn
+   * rotation. Cleared by reviving.
+   */
+  defeated: boolean
 }
