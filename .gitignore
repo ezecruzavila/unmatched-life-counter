@@ -1,27 +1,20 @@
-*.iml
-.gradle
-.idea
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# Dependencies & build output
+node_modules
+dist
+dist-ssr
+*.tsbuildinfo
+
+# Local env / misc
+*.local
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
 
-# Web (PWA) port
-/web/node_modules
-/web/dist
-/web/dist-ssr
-/web/*.local
-
-# Claude / editor local
+# Editor / tooling
+.idea
+.vscode
+.cursor
 /.claude
-/.cursor
-/.vscode
-/.kotlin
+
+# Stray native leftovers (this is the web branch)
+.gradle
+/build
+local.properties

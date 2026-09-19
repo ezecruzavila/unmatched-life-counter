@@ -1,191 +1,50 @@
-# UnmatchedCounter
+# UnmatchedCounter — Web (PWA)
 
-Life counter for the **Unmatched** board game. Available on **Android**,
-**iOS**, and as a **web app (PWA)**, with the same characters, art and rules on
-all platforms.
+Life counter for the **Unmatched** board game, as an installable, offline-capable
+web app. Built with React + Vite + TypeScript. Runs entirely in the browser (no
+server), works offline, and can be installed to the home screen on Android,
+iPad/iPhone (Safari), and desktop.
 
-## Overview
+This `main` branch is the **web** app. The native apps live on their own
+branches:
 
-Each player picks a fighter from the roster and the app tracks their life
-total during the game. Characters that come as a duo or trio (Geralt &
-Dendelion, Bigfoot & Jackalope, the Raptors, Sherlock & Dr. Watson, Sinbad &
-The Porter…) get one independent life pool per side, all on the same panel.
+- `android` — Android app (Kotlin, MVVM, Hilt)
+- `ios` — iOS app (Swift)
 
-The UI is portrait-only and orientation-aware: each seat is rotated so the
-number always reads upright for the player sitting at that side of the table.
+The game domain — the 22 fighters, their life pools, labels, setup accent colors,
+and floating extra buttons (Muldoon's trap counter, Schrödinger's / Alice's
+toggles) — is ported 1:1 from the Android sources (`android` branch). Character
+art is reused verbatim under `public/art`.
 
-## Features
+## Develop
 
-* 100% free with no ads
-* Supports 2 or 4 players on a shared-screen tabletop layout
-* Per-character starting life, including multi-pool fighters (e.g. Geralt & Dendelion, Raptors)
-* Character-specific floating tokens over the life counter (e.g. Muldoon's trap counter,
-  Schrödinger's Cat UNCERTAIN/OBSERVED toggle)
-* Hold-to-change life counters and quick game reset
-* Dark theme
-
-## Supported characters
-
-Alice & Jabberwock, Arthur & Merlin, Bigfoot & Jackalope, Bruce Lee, Bullseye,
-Chupacabras, Daredevil, Elektra, Eredin, Geralt & Dendelion, Houdini & Bess,
-Leshen & Wolves, Loki, Medusa, Muldoon & Workers, Raptors, Schrödinger's Cat,
-Sherlock & Dr. Watson, Sinbad & The Porter, Syndra, Taskmaster, Zed.
-
-## Players
-
-- **2 or 4 players** per game (toggle on the setup screen).
-- **1 to 3 life pools per player**, decided automatically by the chosen
-  character — a solo fighter shows one big number, a duo splits the panel in
-  two, the Raptors split it in three.
-- Starting life is per-character (most fighters start at 16, the Raptors at
-  7 each, etc.).
-- Pools are clamped at **0** (a dead pool greys out, hides its number, and
-  disables the `−` button) and at the character's starting value (the `+`
-  button is disabled at max).
-
-## Screens
-
-### Setup screen
-
-The launch screen, used to pick how many seats are in play and which fighter
-sits at each one.
-
-<p>
-<img width="800" height="1340" alt="Screenshot_20260502_155922_Unmatched" src="https://github.com/user-attachments/assets/ac829ae3-a96a-4745-84d3-52f104d79868" />
-<img width="800" height="1340" alt="Screenshot_20260502_155846_Unmatched" src="https://github.com/user-attachments/assets/ccfab8d2-24fd-45e0-8ee6-151b7f07495f" />
-
-</p>
-
-- **Title bar** with the app name and a thin two-tone divider with a small
-  diamond marker in the middle.
-- **Player count toggle** ("2 Players" / "4 Players") right under the title.
-  The selected option gets a coloured stroke; the unselected one stays muted.
-- **2 × 2 grid of player cards**, one per seat. In 2-player mode the bottom
-  two cards dim and stop accepting taps.
-- Each card is a rounded rectangle with a **circular "bite"** carved out of
-  the inner corner facing the centre. The four bites converge around a
-  central **Unmatched logo** that peeks through the gap.
-- Inside each card:
-  - A circular **avatar** of the selected character (top, centred).
-  - **"Player N"** label.
-  - A **character dropdown** with the current character name and a `▾`
-    chevron on the right. Tapping it opens a picker showing the full roster
-    sorted A → Z.
-- Cards (and their inner avatar / dropdown borders) take the **accent
-  colour** of the chosen character — gold for Bruce Lee, teal for the
-  Witcher, purple for Syndra, etc.
-- A wide **"⚔︎ START GAME"** button pinned to the bottom opens the game
-  screen with the chosen line-up.
-
-### Game screen
-
-The actual life counter, shown once the game starts.
-
-<p>
-  <img src="screenshots/ios-game.png" width="240"/>
-  <img src="screenshots/android-game.png" width="240"/>
-</p>
-
-- One **panel per seat** (2 or 4), arranged as a horizontal split for two
-  players or a 2 × 2 grid for four. Each panel is **rotated** so the numbers
-  always read upright for the player sitting on that side of the table.
-- Each panel is filled with the chosen character's **full-bleed background
-  art** (e.g. the Medusa mosaic, Bruce Lee's dragon, Syndra's nebula).
-- On top of the art, the panel stacks **1 to 3 life pool rows** — one per
-  pool. A solo character has a single big number; duos like Geralt +
-  Dendelion split the panel in two; the Raptors split it in three.
-- Every life pool contains:
-  - A small "chip" with the **pool name** at the top, with a translucent
-    black background.
-  - A huge **amount label** in the centre with a soft drop shadow so it
-    reads against any background.
-  - **`−` and `+` hold-to-repeat buttons** on the sides. A tap changes the
-    value by 1; pressing and holding ramps the cadence up so big swings are
-    fast.
-- A pool **clamps at 0**: the number fades out, a translucent black overlay
-  greys the whole pool area, and `−` is disabled. Pressing `+` brings it
-  back. Pools also clamp at the character's starting maximum.
-- The centre of the screen has a small **hub** with a restart (`↻`) and
-  exit (`✕`) button, both guarded by confirmation alerts. **Long-pressing**
-  the hub toggles whether the system bars are hidden.
-
-## Building (Android)
-
-This is a standard Gradle Android project (Kotlin, MVVM, Hilt).
-
-```
-./gradlew :app:assembleDebug
-```
-
-The debug APK is written to `app/build/outputs/apk/debug/`.
-
-## Generating an .ipa (iOS)
-
-The repo ships an end-to-end script that produces an **unsigned** `.ipa`
-without opening Xcode, so you can re-sign and sideload it later (no Apple
-Developer Program account needed).
-
-```
-bash ios/_gen_ipa.sh
-```
-
-What it does:
-
-1. Runs `xcodebuild archive` in **Release** for `generic/platform=iOS` with
-   `CODE_SIGNING_ALLOWED=NO` (skips the dev-team / provisioning profile
-   requirement that otherwise blocks Archive).
-2. Takes the resulting `.xcarchive` and wraps its `.app` bundle in the
-   standard `Payload/<App>.app/` layout that Apple expects in an IPA.
-3. Zips it as `ios/build/UnmatchedCounter.ipa` (~30 MB).
-
-Outputs:
-
-```
-ios/build/
-├── UnmatchedCounter.xcarchive    ← full archive (binary + dSYMs + SwiftSupport)
-├── UnmatchedCounter.ipa          ← unsigned IPA, ready to re-sign
-└── DerivedData/                  ← build cache, safe to delete
-```
-
-iOS will refuse to install an unsigned IPA directly. To put it on a real
-device, use **ReProvision Reborn**: an on-device app that takes the `.ipa`,
-signs it with your Apple ID (free account is enough), installs it, and
-re-signs it automatically every 7 days so it doesn't expire.
-
-Steps:
-
-1. Install ReProvision Reborn on the device (typically via TrollStore or
-   AltStore — see the project's GitHub for the current install path).
-2. Transfer `ios/build/UnmatchedCounter.ipa` to the device (AirDrop, Files
-   app, Finder sync, etc.).
-3. Open ReProvision Reborn → pick the IPA → sign in with your Apple ID →
-   *Install*.
-
-## Web (PWA)
-
-A browser version lives under [`web/`](web/) — React + Vite + TypeScript, built
-as an installable, offline-capable Progressive Web App. It runs entirely on the
-device (no server) and mirrors the same roster, rules and rotated tabletop
-layout as the native apps.
-
-```
-cd web
+```bash
 npm install
-npm run dev                                  # dev server on localhost:5173
-npm run build && npm run preview -- --host   # production build, reachable on the LAN
+npm run dev        # http://localhost:5173
 ```
 
-Deploy `web/dist/` to any static host (GitHub Pages, Netlify, …). On a device,
-open the URL and use the browser's "Add to Home Screen" to install it; once
-loaded it works fully offline. See [`web/README.md`](web/README.md) for details.
+## Build & preview
 
-## Contributing
+```bash
+npm run build      # outputs to dist/
+npm run preview    # serve the production build (add --host to expose on your LAN)
+```
 
-Feel free to use this code however you'd like.
-If you are interested in contributing, fork the code and open a pull request.
-Please also report any issues you encounter in the Issues tab — that is also a good
-place to look if you'd like to help with features or bug fixes.
+## Use on a tablet / phone
 
-Adding a character is mostly a matter of adding an entry to the `UnmatchedCharacters`
-fighter list (display name, life pools, labels, art) plus the matching avatar/background
-drawables (and the matching entry in `web/src/domain/characters.ts` for the web port).
+1. `npm run preview -- --host` and open the printed LAN URL on the device
+   (or deploy `dist/` to any static host — GitHub Pages, Netlify, etc.).
+2. Android/Chrome: menu → "Add to Home screen".
+   iPad/iPhone Safari: Share → "Add to Home Screen".
+3. Once loaded, it works offline — all art is cached by the service worker.
+
+## Why a PWA
+
+Because it's a Progressive Web App, it installs like a native app and runs 100%
+locally on the device — no connection needed at the game table.
+
+## Adding a character
+
+Add an entry to [`src/domain/characters.ts`](src/domain/characters.ts) (display
+name, life pools, labels, setup accent color, optional extra button) and drop the
+matching `avatar_*.png` / `bg_*.png` art into [`public/art`](public/art).
