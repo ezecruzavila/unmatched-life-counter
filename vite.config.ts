@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { version } from './package.json'
 
 // Served under a subpath on GitHub Pages etc.; use relative base so it works anywhere.
 export default defineConfig({
   base: './',
+  // Expose the package version to the app (shown in the setup footer).
+  define: {
+    __APP_VERSION__: JSON.stringify(version),
+  },
   plugins: [
     react(),
     VitePWA({

@@ -44,8 +44,13 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  /* Dynamic viewport units (dvh/dvw) track the *visible* area on mobile — they
+     shrink when the browser's address bar is showing, unlike vh/vw which measure
+     the full screen and hide content behind the chrome. Fallback to vh/vw first. */
   width: 100vw;
   height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   transform-origin: top left;
   background: var(--bg);
   overflow: hidden;
@@ -56,6 +61,8 @@ body {
   .app-frame--setup {
     width: 100vh;
     height: 100vw;
+    width: 100dvh;
+    height: 100dvw;
     transform: translateX(100vw) rotate(90deg);
   }
 }
@@ -65,6 +72,8 @@ body {
   .app-frame--game {
     width: 100vh;
     height: 100vw;
+    width: 100dvh;
+    height: 100dvw;
     transform: translateX(100vw) rotate(90deg);
   }
 }
@@ -75,8 +84,10 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: max(20px, env(safe-area-inset-top)) 16px 20px;
+  padding: max(20px, env(safe-area-inset-top)) 16px
+    max(20px, env(safe-area-inset-bottom));
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .setup__title {
@@ -155,10 +166,14 @@ body {
   background: #14262a;
 }
 
-/* Card grid — always a 2×2 layout; unused seats are dimmed, not removed. */
+/* Card grid — always a 2×2 layout; unused seats are dimmed, not removed.
+   flex-grow lets it expand to fill spare height, but a min-height floor keeps the
+   cards legible on short screens: below that the whole .setup scrolls instead of
+   crushing the cards to fit. flex-shrink:0 stops the grid from being squeezed. */
 .setup__grid {
   position: relative;
-  flex: 1;
+  flex: 1 0 auto;
+  min-height: 420px;
   display: grid;
   gap: 10px;
   align-content: stretch;
@@ -317,8 +332,20 @@ body {
   font-size: 16px;
 }
 
+/* Discreet version tag pinned below the START button. */
+.setup__version {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #6a6a70;
+}
+
 .setup__start {
   align-self: stretch;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;

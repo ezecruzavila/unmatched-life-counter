@@ -61,6 +61,8 @@ export function SetupScreen() {
         <SwordsIcon />
         START GAME
       </button>
+
+      <span className="setup__version">v{__APP_VERSION__}</span>
     </div>
   )
 }
