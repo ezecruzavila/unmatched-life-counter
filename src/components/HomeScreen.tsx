@@ -6,12 +6,14 @@ import {
   clearCacheAndReload,
 } from '../state/gameStore'
 import { SUPPORTED_PLAYER_COUNTS } from '../domain/gameRules'
-import { backgroundArt, iconArt, logoArt } from '../art'
+import { uiArt } from '../art'
+import { enterFullscreen } from '../fullscreen'
+import { useInstallPrompt } from '../hooks/useInstallPrompt'
 
 /** Player-count icon assets (white glyphs with black stroke). */
 const COUNT_ICON: Record<number, string> = {
-  2: '2_players_icon.png',
-  4: '4_players_icon.png',
+  2: 'icons/players_2.webp',
+  4: 'icons/players_4.webp',
 }
 
 /**
@@ -25,13 +27,14 @@ export function HomeScreen() {
   const { playerCount } = useAppState()
   const [showInfo, setShowInfo] = useState(false)
   const [confirmClear, setConfirmClear] = useState(false)
+  const { canInstall, promptInstall } = useInstallPrompt()
 
   return (
     <div className="home">
       {/* Decorative full-bleed background (character art around a dark centre). */}
       <img
         className="home__bg"
-        src={backgroundArt('main_ui_bg.png')}
+        src={uiArt('backgrounds/main.webp')}
         alt=""
         aria-hidden
       />
@@ -47,7 +50,7 @@ export function HomeScreen() {
       </button>
 
       <div className="home__body">
-        <img className="home__logo" src={logoArt('unmatched_logo.png')} alt="Unmatched Life Counter" />
+        <img className="home__logo" src={uiArt('logos/wordmark.webp')} alt="Unmatched Life Counter" />
 
         <span className="home__label">PLAYERS</span>
         <div className="home__count" role="group" aria-label="Player count">
@@ -59,15 +62,37 @@ export function HomeScreen() {
               onClick={() => setPlayerCount(count)}
               aria-pressed={playerCount === count}
             >
-              <img className="count-btn__icon" src={iconArt(COUNT_ICON[count])} alt="" aria-hidden />
+              <img className="count-btn__icon" src={uiArt(COUNT_ICON[count])} alt="" aria-hidden />
               <span>{count}</span>
             </button>
           ))}
         </div>
 
-        <button type="button" className="home__continue" onClick={goToSetup}>
+        <button
+          type="button"
+          className="home__continue"
+          onClick={() => {
+            // Use this tap (a user gesture) to go fullscreen in a browser tab —
+            // hides the address/nav bars without installing. Best-effort.
+            enterFullscreen()
+            goToSetup()
+          }}
+        >
           CONTINUE
         </button>
+
+        {/* PWA install: only shown when the browser reports the app is
+            installable AND it isn't already running installed (see the hook). */}
+        {canInstall && (
+          <button
+            type="button"
+            className="home__install"
+            onClick={() => void promptInstall()}
+          >
+            <InstallIcon />
+            Install app
+          </button>
+        )}
       </div>
 
       {/* Footer: version + credits (source repo, hosting) on the left, cache
@@ -166,6 +191,22 @@ export function HomeScreen() {
         </div>
       )}
     </div>
+  )
+}
+
+/** Download-to-device glyph for the install button. */
+function InstallIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        d="M12 3v10m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
 

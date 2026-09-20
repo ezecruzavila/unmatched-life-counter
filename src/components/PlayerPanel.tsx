@@ -1,7 +1,14 @@
+import { useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { incrementLife, tapExtraButton, advanceTurn, defeatPlayer } from '../state/gameStore'
+import {
+  incrementLife,
+  tapExtraButton,
+  stepExtraValue,
+  advanceTurn,
+  defeatPlayer,
+} from '../state/gameStore'
 import { getCharacter } from '../domain/characters'
-import { backgroundArt, extraArt } from '../art'
+import { characterArt } from '../art'
 import type { PlayerModel } from '../domain/types'
 import { useHold } from '../hooks/useHold'
 
@@ -50,7 +57,7 @@ export function PlayerPanel({
         player.defeated ? ' panel--defeated' : ''
       }`}
     >
-      <img className="panel__bg" src={backgroundArt(character.background)} alt="" aria-hidden />
+      <img className="panel__bg" src={characterArt(character.slug, 'background')} alt="" aria-hidden />
 
       {/* Seat badge (P1, P2, …) pinned to the panel's OUTER top corner (the same
           outer side as the extra button, away from the central hub). It sits
@@ -104,6 +111,7 @@ export function PlayerPanel({
             divider={i > 0}
             label={player.lifeSegmentLabels[i]}
             life={life}
+            slug={character.slug}
             overlay={character.poolOverlays?.[i]}
           />
         ))}
@@ -112,6 +120,7 @@ export function PlayerPanel({
       {player.extraButtonValue !== null && character.extraButton && (
         <ExtraButton
           playerId={player.id}
+          slug={character.slug}
           spec={character.extraButton}
           value={player.extraButtonValue}
           corner={extraCorner}
@@ -128,6 +137,7 @@ function LifePool({
   divider,
   label,
   life,
+  slug,
   overlay,
 }: {
   playerId: number
@@ -136,7 +146,9 @@ function LifePool({
   divider: boolean
   label: string
   life: number
-  /** Optional per-pool silhouette (e.g. a Raptor) shown over the shared bg. */
+  /** Character slug, used to resolve the overlay art under characters/<slug>/. */
+  slug: string
+  /** Optional per-pool silhouette leaf (e.g. 'blue' → raptors/blue.webp). */
   overlay?: string
 }) {
   const dec = useHold(() => incrementLife(playerId, -1, segmentIndex))
@@ -175,8 +187,8 @@ function LifePool({
           an individual silhouette's scale. */}
       {overlay && (
         <img
-          className={`pool__overlay pool__overlay--${overlay.replace(/^raptors_|\.png$/g, '')}`}
-          src={extraArt(overlay)}
+          className={`pool__overlay pool__overlay--${overlay}`}
+          src={characterArt(slug, overlay)}
           alt=""
           aria-hidden
         />
@@ -193,11 +205,14 @@ function LifePool({
 
 function ExtraButton({
   playerId,
+  slug,
   spec,
   value,
   corner,
 }: {
   playerId: number
+  /** Character slug, used to resolve counter art under characters/<slug>/. */
+  slug: string
   spec: NonNullable<ReturnType<typeof getCharacter>['extraButton']>
   value: number
   /** Bottom corner (panel space) to pin the button to. */
@@ -207,15 +222,7 @@ function ExtraButton({
 
   if (spec.kind === 'counter') {
     return (
-      <button
-        type="button"
-        className={`extra extra--counter ${cornerClass}`}
-        onClick={() => tapExtraButton(playerId)}
-        aria-label="Contador"
-      >
-        <img src={extraArt(spec.image)} alt="" aria-hidden />
-        <span className="extra__count">{value}</span>
-      </button>
+      <CounterExtra playerId={playerId} slug={slug} spec={spec} value={value} cornerClass={cornerClass} />
     )
   }
 
@@ -229,5 +236,121 @@ function ExtraButton({
     >
       {s.text}
     </button>
+  )
+}
+
+/** How long (ms) to hold the counter before the stepper pops up. */
+const COUNTER_HOLD_MS = 350
+
+/**
+ * Counter extra (Muldoon's trap, Taskmaster's shield). A quick TAP does the
+ * normal cycle (via tapExtraButton — Muldoon counts down, Taskmaster up). A
+ * press-and-HOLD opens a compact − value + stepper so it can go both ways
+ * without wrapping. The popover lives inside the rotated panel, so it faces the
+ * seated player, and a scrim closes it on tap-away.
+ */
+function CounterExtra({
+  playerId,
+  slug,
+  spec,
+  value,
+  cornerClass,
+}: {
+  playerId: number
+  /** Character slug, used to resolve the counter art under characters/<slug>/. */
+  slug: string
+  spec: Extract<NonNullable<ReturnType<typeof getCharacter>['extraButton']>, { kind: 'counter' }>
+  value: number
+  cornerClass: string
+}) {
+  const [open, setOpen] = useState(false)
+  const min = spec.min ?? 0
+  const max = spec.max ?? spec.start
+
+  // Distinguish a quick tap (normal cycle) from a hold (open stepper): a timer
+  // started on pointer-down fires the stepper; if the pointer lifts first, it's
+  // a tap. `held` suppresses the tap action once the hold has triggered.
+  const holdTimer = useRef<number | null>(null)
+  const held = useRef(false)
+
+  const clearHold = () => {
+    if (holdTimer.current !== null) {
+      window.clearTimeout(holdTimer.current)
+      holdTimer.current = null
+    }
+  }
+
+  const onPointerDown = () => {
+    held.current = false
+    clearHold()
+    holdTimer.current = window.setTimeout(() => {
+      held.current = true
+      setOpen(true)
+    }, COUNTER_HOLD_MS)
+  }
+  const onPointerUp = () => {
+    clearHold()
+    if (!held.current && !open) tapExtraButton(playerId)
+  }
+  const onPointerLeave = () => clearHold()
+
+  return (
+    <div
+      className={`extra extra--counter ${cornerClass}`}
+      style={spec.scale ? ({ '--counter-size': `${64 * spec.scale}px` } as CSSProperties) : undefined}
+    >
+      <button
+        type="button"
+        className="extra__counter-btn"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerLeave}
+        onPointerCancel={clearHold}
+        aria-label="Contador"
+        aria-expanded={open}
+      >
+        <img src={characterArt(slug, spec.image)} alt="" aria-hidden />
+        <span
+          className="extra__count"
+          style={{
+            color: spec.countColor ?? '#000',
+            marginTop: spec.countOffsetY ?? '8px',
+            ...(spec.countStroke
+              ? ({ WebkitTextStroke: `1px ${spec.countStroke}` } as CSSProperties)
+              : {}),
+          }}
+        >
+          {value}
+        </span>
+      </button>
+
+      {open && (
+        <>
+          {/* Tap-away closes; inside the panel so it rotates with the seat. */}
+          <div className="extra-step__scrim" onClick={() => setOpen(false)} />
+          <div className="extra-step" role="group" aria-label="Ajustar contador">
+            <button
+              type="button"
+              className="extra-step__btn"
+              onClick={() => stepExtraValue(playerId, -1)}
+              disabled={value <= min}
+              aria-label="Restar"
+            >
+              −
+            </button>
+            <span className="extra-step__value">{value}</span>
+            <button
+              type="button"
+              className="extra-step__btn"
+              onClick={() => stepExtraValue(playerId, +1)}
+              disabled={value >= max}
+              aria-label="Sumar"
+            >
+              +
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   )
 }

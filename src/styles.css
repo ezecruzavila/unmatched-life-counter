@@ -165,6 +165,30 @@ body {
   filter: brightness(1.08);
 }
 
+/* Install-as-PWA button: a secondary (outlined) action under CONTINUE. Only
+   rendered when installable and not already installed. */
+.home__install {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.home__install:active {
+  transform: scale(0.98);
+  background: rgba(45, 183, 183, 0.12);
+}
+
 /* Info button, top-right. */
 .home__info-btn {
   position: absolute;
@@ -282,6 +306,15 @@ body {
   padding: clamp(8px, 2vh, 20px);
 }
 
+/* Avatar + "Player N" label group. Stacked (column) by default. */
+.seat-sel__id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.6vh, 12px);
+}
+
 .seat-sel__avatar {
   width: clamp(56px, 22vh, 120px);
   aspect-ratio: 1;
@@ -302,6 +335,44 @@ body {
 @media (max-width: 500px), (max-height: 500px) {
   .seat-sel__avatar {
     display: none;
+  }
+}
+
+/*
+ * Galaxy Tab A7 Lite tuning. The panel is 1340×800 PHYSICAL, but at DPR 1.5 the
+ * CSS viewport (what media queries see) is ~533–534 on the short axis and
+ * ~765 (browser tab, with bars) to ~894 (installed/fullscreen) on the long axis.
+ * We match BOTH orientations AND both browser/installed heights, in FIXED px
+ * (never vh) so the seat looks IDENTICAL however the tablet is held:
+ *   - avatar 30% smaller (120 → 84px) and moved beside the "Player N" label,
+ *   - CONFIRM button and dropdown 20% smaller (320 → 256px wide).
+ * Short axis ≈530 keeps this clear of phones (≤~430) and larger tablets (≥~600).
+ */
+@media (min-width: 500px) and (max-width: 580px) and (min-height: 700px) and (max-height: 940px),
+       (min-width: 700px) and (max-width: 940px) and (min-height: 500px) and (max-height: 580px) {
+  /* Avatar to the LEFT, "Player N" to its right. */
+  .seat-sel__id {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .seat-sel__avatar {
+    width: 84px; /* 120 × 0.7 */
+    border-width: 2px;
+  }
+  /* Dropdown −20%. Scoped under .seat-sel to outrank the base .cdrop rule that
+     follows later in the file (equal specificity would otherwise win by order). */
+  .seat-sel .cdrop {
+    width: 256px; /* 320 × 0.8 */
+  }
+  .seat-sel .cdrop__trigger {
+    height: 42px; /* 52 × 0.8 */
+    font-size: 14px;
+  }
+  /* CONFIRM −20%. */
+  .seat-sel .seat-sel__confirm {
+    width: 256px; /* 320 × 0.8 */
+    padding: 11px;
+    font-size: 16px;
   }
 }
 
@@ -529,16 +600,17 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 21;
-  width: 98px;
-  height: 98px;
+  /* 15% smaller than the previous 98px. */
+  width: 83px;
+  height: 83px;
 }
 
 .hub-btn {
   position: absolute;
   top: 0;
   left: 0;
-  width: 98px;
-  height: 98px;
+  width: 83px;
+  height: 83px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -566,10 +638,10 @@ body {
    Slightly smaller than the toggle so it stays the visual anchor. */
 .hub-btn--action {
   z-index: 1;
-  width: 64px;
-  height: 64px;
-  top: 17px; /* centre the smaller action button behind the 98px toggle */
-  left: 17px;
+  width: 54px;
+  height: 54px;
+  top: 15px; /* centre the smaller action button behind the 83px toggle */
+  left: 15px;
   background: #242424;
   opacity: 0;
   pointer-events: none;
@@ -582,10 +654,10 @@ body {
 }
 /* Reset slides left, exit slides right — clear of the larger toggle. */
 .table__hub--open .hub-btn--reset {
-  transform: translateX(-96px) scale(1);
+  transform: translateX(-82px) scale(1);
 }
 .table__hub--open .hub-btn--exit {
-  transform: translateX(96px) scale(1);
+  transform: translateX(82px) scale(1);
 }
 
 /* Scrim to catch taps outside the open menu. */
@@ -638,32 +710,38 @@ body {
 }
 
 /*
- * Seat badge (P1, P2, …) in the panel's top OUTER corner. Same typography as the
- * hero name chips (.pool__label) over a dark scrim for legibility. It's also the
- * TURN control: a button that's only enabled on this player's turn (red outline)
- * and, when tapped, passes the turn to the next living player.
+ * Seat badge (P1, P2, …) pinned to the panel's BOTTOM-INNER corner — the bottom
+ * edge (nearest the seated player) on the INNER side (toward the table's centre
+ * column). This corner is always free: hero name chips sit at the TOP of each
+ * pool, the life numbers are centred, and the floating extra button takes the
+ * OUTER bottom corner — so the inner bottom corner never has anything else.
+ * Same typography as the hero name chips over a dark scrim for legibility. It's
+ * also the TURN control: enabled (red outline) only on this player's turn and,
+ * when tapped, passes the turn to the next living player.
  */
 .panel__seat {
   position: absolute;
-  top: 6%;
+  bottom: 6%;
   z-index: 4;
   padding: 3px 10px;
   border: 2px solid transparent;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.55);
-  font-size: clamp(11px, 3.2vh, 22px);
+  /* 30% smaller than the previous clamp(11px, 3.2vh, 22px). */
+  font-size: clamp(8px, 2.24vh, 15px);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: #fff;
   white-space: nowrap;
   font-family: inherit;
-  /* Disabled (not this player's turn): inert, just a label. */
-  pointer-events: none;
+  /* Keep pointer-events ON even when disabled so the badge's footprint SWALLOWS
+     taps instead of letting them fall through to the life-counter's +/- zones
+     beneath it (which caused accidental life changes). A disabled <button>
+     captures the tap but fires nothing, so its area is truly inert. */
   cursor: default;
 }
 /* Active turn: red outline + glow, and now tappable to end the turn. */
 .panel__seat--turn {
-  pointer-events: auto;
   cursor: pointer;
   border-color: #e53935;
   color: #fff;
@@ -673,14 +751,14 @@ body {
 .panel__seat--turn:active {
   background: rgba(229, 57, 53, 0.4);
 }
-/* Pinned to the seat's OUTER top corner (away from the central hub) — the same
-   outer side the extra button uses. This keeps every badge clear of the centre:
-   inner corners (P2/P3 in 4-player) would collide with the hub. */
+/* The modifier encodes the OUTER side (where the extra button lives), so the
+   badge goes to the OPPOSITE (inner) side of the bottom edge — never colliding
+   with the extra button, and staying on the player-facing edge. */
 .panel__seat--left {
-  left: 4%;
+  right: 4%;
 }
 .panel__seat--right {
-  right: 4%;
+  left: 4%;
 }
 
 /*
@@ -789,7 +867,8 @@ body {
   padding: 3px 10px;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.55);
-  font-size: clamp(9px, 9cqh, 20px);
+  /* 30% smaller than the previous clamp(9px, 9cqh, 20px). */
+  font-size: clamp(6px, 6.3cqh, 14px);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: #fff;
@@ -902,15 +981,29 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
+/* Counter extra is a wrapper (button + optional stepper popover), so it drops
+   the button chrome; the inner .extra__counter-btn carries the art + number. */
 .extra--counter {
-  width: 64px;
-  height: 64px;
+  /* Base size; a per-character `scale` overrides --counter-size inline. */
+  width: var(--counter-size, 64px);
+  height: var(--counter-size, 64px);
   background: transparent;
+  padding: 0;
+}
+
+.extra__counter-btn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
   display: grid;
   place-items: center;
 }
 
-.extra--counter img {
+.extra__counter-btn img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -921,10 +1014,61 @@ body {
 .extra__count {
   position: relative;
   z-index: 1;
-  color: #000;
+  /* colour + vertical nudge (margin-top) set inline per character. */
   font-weight: 900;
   font-size: 22px;
-  margin-top: 8px; /* triangle art is widest at the bottom */
+}
+
+/* Stepper popover: − value + . Anchored over the counter, inside the rotated
+   panel so it faces the seated player. Scrim catches tap-away. */
+.extra-step__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+}
+.extra-step {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #1c1c20;
+  border: 2px solid var(--border-gray);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+}
+.extra-step__btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: #33333a;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.extra-step__btn:active {
+  background: var(--accent);
+}
+.extra-step__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.extra-step__value {
+  min-width: 24px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
 }
 
 /* ============================= CONFIRM DIALOG ============================= */

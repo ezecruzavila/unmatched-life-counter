@@ -18,3 +18,6 @@ dist-ssr
 .gradle
 /build
 local.properties
+
+# Local HTTPS certs (mkcert) — never commit private keys
+.certs/

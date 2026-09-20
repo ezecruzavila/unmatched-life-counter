@@ -10,11 +10,11 @@ import {
 } from '../state/gameStore'
 import { SEAT_ROTATION, EXTRA_BUTTON_CORNER, tabletopPositionsFor } from '../domain/gameRules'
 import { CHARACTER_NAMES_SORTED, getCharacter } from '../domain/characters'
-import { avatarArt, buttonArt } from '../art'
+import { characterArt, uiArt } from '../art'
 import type { PlayerSetup } from '../domain/types'
 import { PlayerPanel } from './PlayerPanel'
 
-type Confirm = 'reset' | 'exit' | null
+type Confirm = 'reset' | 'home' | null
 
 /**
  * The unified table: character selection and the life counter share ONE screen.
@@ -85,14 +85,14 @@ export function TableScreen() {
             type="button"
             className="hub-btn hub-btn--action hub-btn--exit"
             onClick={() => {
-              setConfirm('exit')
+              setConfirm('home')
               closeMenu()
             }}
-            title="Exit"
-            aria-label="Exit to home"
+            title="Home"
+            aria-label="Back to home screen"
             tabIndex={menuOpen ? 0 : -1}
           >
-            <ExitIcon />
+            <HomeIcon />
           </button>
 
           {/* Always-visible toggle (the provided menu asset). */}
@@ -107,7 +107,7 @@ export function TableScreen() {
             {menuOpen ? (
               <CloseIcon />
             ) : (
-              <img className="hub-btn__img" src={buttonArt('boton_menu.png')} alt="" aria-hidden />
+              <img className="hub-btn__img" src={uiArt('buttons/menu.webp')} alt="" aria-hidden />
             )}
           </button>
         </div>
@@ -118,11 +118,11 @@ export function TableScreen() {
 
       {confirm && (
         <ConfirmDialog
-          title={confirm === 'reset' ? 'Restart' : 'Exit'}
+          title={confirm === 'reset' ? 'Restart' : 'Home'}
           message={
             confirm === 'reset'
               ? 'Send every seat back to character selection? Life totals will be lost.'
-              : 'Exit to the home screen?'
+              : 'Return to the home screen?'
           }
           onCancel={() => setConfirm(null)}
           onConfirm={() => {
@@ -164,15 +164,19 @@ function SeatSelector({ player, rotation }: { player: PlayerSetup; rotation: num
       style={{ '--sel-accent': accent } as CSSProperties}
     >
       <div className="seat-sel__inner">
-        {/* Avatar is hidden on small screens (phones) where it would push the
-            controls off the seat — see the media query in styles.css. */}
-        <img
-          className="seat-sel__avatar"
-          style={{ borderColor: accent }}
-          src={avatarArt(character.avatar)}
-          alt={character.displayName}
-        />
-        <span className="seat-sel__seat">Player {player.id + 1}</span>
+        {/* Avatar + "Player N" label. Stacked by default; on the Galaxy Tab A7
+            Lite viewport they sit side by side (see styles.css media query).
+            Avatar is hidden on phones where it would push the controls off the
+            seat — see the media query in styles.css. */}
+        <div className="seat-sel__id">
+          <img
+            className="seat-sel__avatar"
+            style={{ borderColor: accent }}
+            src={characterArt(character.slug, 'avatar')}
+            alt={character.displayName}
+          />
+          <span className="seat-sel__seat">Player {player.id + 1}</span>
+        </div>
         <CharacterDropdown
           value={player.characterName}
           accent={accent}
@@ -302,8 +306,8 @@ function ReloadIcon() {
   )
 }
 
-/** Exit glyph — a door/arrow. */
-function ExitIcon() {
+/** Home glyph — a house outline. */
+function HomeIcon() {
   return (
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
       <path
@@ -312,7 +316,7 @@ function ExitIcon() {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 8l-4 4 4 4M6 12h9"
+        d="M4 11l8-6 8 6M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9M10 20v-5h4v5"
       />
     </svg>
   )

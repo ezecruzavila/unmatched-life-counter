@@ -10,6 +10,7 @@ import {
 } from '../domain/gameRules'
 import {
   initialExtraValue,
+  nextExtraValue,
   type PlayerModel,
   type PlayerSetup,
 } from '../domain/types'
@@ -36,17 +37,17 @@ export interface AppState {
   /**
    * Player id (seat index) whose turn it currently is, or null when no turn is
    * active yet (not every active seat has confirmed). The turn always starts at
-   * P1 and advances 1 → 3 → 2 → 4, skipping defeated players.
+   * P1 and advances 1 → 2 → 3 → 4, skipping defeated players.
    */
   currentTurn: number | null
 }
 
 /**
- * Turn order by seat id (0-based), matching the game's 1 → 3 → 2 → 4 rule.
- * With 2 players only seats 0 and 1 are active, so the same array (filtered by
- * playerCount) yields 1 → 2.
+ * Turn order by seat id (0-based): plain 1 → 2 → 3 → 4. With 2 players only
+ * seats 0 and 1 are active, so the same array (filtered by playerCount) yields
+ * 1 → 2.
  */
-const TURN_ORDER = [0, 2, 1, 3]
+const TURN_ORDER = [0, 1, 2, 3]
 
 const STORAGE_KEY = 'unmatched-counter-state-v1'
 
@@ -361,12 +362,23 @@ export function tapExtraButton(playerId: number) {
     if (!p || p.id !== playerId || p.extraButtonValue === null) return p
     const spec = getCharacter(p.characterName).extraButton
     if (!spec) return p
-    const next =
-      spec.kind === 'counter'
-        ? p.extraButtonValue <= 0
-          ? spec.start
-          : p.extraButtonValue - 1
-        : (p.extraButtonValue + 1) % spec.states.length
+    return { ...p, extraButtonValue: nextExtraValue(spec, p.extraButtonValue) }
+  })
+  setState({ ...state, models })
+}
+
+/**
+ * Nudge a counter extra by `delta` (used by the stepper popover), clamped to the
+ * counter's [min, max] — no wrap, unlike a plain tap. No-op for toggles.
+ */
+export function stepExtraValue(playerId: number, delta: number) {
+  const models = state.models.map((p) => {
+    if (!p || p.id !== playerId || p.extraButtonValue === null) return p
+    const spec = getCharacter(p.characterName).extraButton
+    if (!spec || spec.kind !== 'counter') return p
+    const min = spec.min ?? 0
+    const max = spec.max ?? spec.start
+    const next = Math.max(min, Math.min(max, p.extraButtonValue + delta))
     return { ...p, extraButtonValue: next }
   })
   setState({ ...state, models })
